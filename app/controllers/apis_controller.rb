@@ -14,7 +14,7 @@ class ApisController < ApplicationController
 
   def status
     render :json => {
-      :person => @person.posts
+      :person => @user.person.posts
     }
   end
   
