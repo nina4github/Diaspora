@@ -26,7 +26,7 @@ class ApisController < ApplicationController
   
   def aspects
     @aspects = @user.aspects
-    render :json{
+    render :json  => {
       :aspects => @aspect
     }
     
@@ -67,14 +67,14 @@ class ApisController < ApplicationController
           flash[:notice] = t('status_messages.create.success', :names => @status_message.mentions.includes(:person => :profile).map{ |mention| mention.person.name }.join(', '))
         end
 
-       render :json{:create =>'status_messages.create.success '.(@status_message.id), :status => '201'}
+       render :json => {:create =>@status_message.guid, :status => '201'}
        
      else
        unless photos.empty?
          photos.update_all(:status_message_guid => nil)
       end
 
-       render :json {:errors => errors, :status => '422'}
+       render :json  => {:errors => errors, :status => '422'}
        
      end
    end
