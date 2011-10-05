@@ -12,8 +12,17 @@ class ApisController < ApplicationController
                     }
   end
 
+  def status
+    render :json => {
+      :pippo => 'pluto'
+    }
+  end
+  
   private
   def set_user_from_oauth
     @user = request.env['oauth2'].resource_owner
   end
+  
+  
+   
 end
