@@ -155,6 +155,7 @@ Diaspora::Application.routes.draw do
 
   scope 'api/v0', :controller => :apis do
     get :me
+    get :status
   end
 
 
