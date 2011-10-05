@@ -14,9 +14,18 @@ class ApisController < ApplicationController
 
   def status
     render :json => {
-      :pippo => 'pluto'
+      :person => @person.posts
     }
   end
+  
+  def posts
+    render :json => {
+      :person => 'posts list'
+    }
+  end
+  
+  
+  
   
   private
   def set_user_from_oauth
