@@ -45,7 +45,7 @@ class ApisController < ApplicationController
    ## support the creation of a new post
    def create
      params[:status_message][:aspect_ids] = params[:aspect_ids]
-
+     current_user=@user
      normalize_public_flag!
 
      @status_message = current_user.build_post(:status_message, params[:status_message])
