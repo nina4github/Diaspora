@@ -27,17 +27,11 @@ class ApisController < ApplicationController
   # retrieves the list of aspects of the current users
   def aspects
     aspects = @user.aspects
-  
+
     aspect=aspects.find_by_name(params[:aspect_name])
-    
-    if aspect.empty?    
-      render :json  => {:aspects => aspects}
-    else
-      render :json  => {
-      :aspect_posts => aspect.posts
-         
+    render :json  => {
+      :aspect_posts => aspect.posts     
     }
-  end
   end
 
   
