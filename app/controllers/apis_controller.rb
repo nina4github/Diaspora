@@ -29,14 +29,15 @@ class ApisController < ApplicationController
     aspects = @user.aspects
   
     aspect=aspects.find_by_name(params[:aspect_name])
-  
-    render :json  => {
-      unless aspect.empty?    
-        :aspect_posts => aspect.posts
-      end
-      :aspects => aspects 
-    }
     
+    if aspect.empty?    
+      render :json  => {:aspect_posts => aspect.posts}
+    else
+      render :json  => {
+      
+        :aspects => aspects 
+    }
+  end
   end
 
   
