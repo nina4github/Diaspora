@@ -24,14 +24,21 @@ class ApisController < ApplicationController
     }
   end
   
+  # retrieves the list of aspects of the current users
   def aspects
-    @aspects = @user.aspects
+    aspects = @user.aspects
+  
+    aspect=aspects.find_by_name(params[:aspect_name])
+  
     render :json  => {
-      :aspects => @aspect
+      unless aspect.empty?    
+        :aspect_posts => aspect.posts
+      end
+      :aspects => aspects 
     }
     
   end
-  
+
   
    def bookmarklet
      @aspects = current_user.aspects
@@ -40,6 +47,10 @@ class ApisController < ApplicationController
      render :layout => nil
    end
 
+
+
+# # # POST create ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## #
+   
    ## POST status_message => text, aspect_ids, photos, services,  
    # taken from StatusMessagesController.rb
    ## support the creation of a new post
@@ -86,6 +97,7 @@ class ApisController < ApplicationController
      public_flag
    end
   
+# # END POST create # ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## #
   
   
   private
