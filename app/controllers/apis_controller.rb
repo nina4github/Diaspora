@@ -95,7 +95,7 @@ class ApisController < ApplicationController
   
   # POST a new aspect for a user
   # modified from aspects_controller.rb
-  def aspects
+  def newaspect
     current_user=@user
     params[:aspect][:user_id]=@user.id
     @aspect=current_user.aspects.create(params[:aspect])
