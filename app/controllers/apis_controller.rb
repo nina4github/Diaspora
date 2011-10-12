@@ -97,6 +97,7 @@ class ApisController < ApplicationController
   # modified from aspects_controller.rb
   def aspects
     current_user=@user
+    params[:aspect][:user_id]=current_user.id
     @aspect=current_user.aspects.create(params[:aspect])
     if @aspect.valid?
    
