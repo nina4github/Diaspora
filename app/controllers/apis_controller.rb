@@ -46,7 +46,9 @@ class ApisController < ApplicationController
    # taken from StatusMessagesController.rb
    ## support the creation of a new post
    def create
-     params[:status_message][:aspect_ids] = params[:aspect_ids]
+     aspect_id= @user.aspects.find(:name => params[:aspect_name]).id
+     # for compatibility with the code of StatusMessagesController.rb
+     params[:status_message][:aspect_ids] = aspect_id
      current_user=@user
      normalize_public_flag!
 
