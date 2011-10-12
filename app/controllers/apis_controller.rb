@@ -112,7 +112,7 @@ class ApisController < ApplicationController
       render :json => {:create => @aspect.name, :status => '201'}
     else
       render :json{
-        :error = 'aspects.create.failure' , :status => '422'     
+        :error => 'aspects.create.failure', :status => '422'     
       }
     end
   end
