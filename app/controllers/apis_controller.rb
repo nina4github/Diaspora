@@ -12,39 +12,35 @@ class ApisController < ApplicationController
                     }
   end
 
-  def status
-    render :json => {
-      :person => @user.person.posts
-    }
-  end
-  
+  # GET all posts of the current user
   def posts
     render :json => {
-      :person => 'posts list'
+      :posts => @user.person.posts
     }
   end
   
-  # retrieves the list of aspects of the current users
-  def aspects
+  # GET all posts within a specific aspect, the aspect belongs to the current user
+  def aspect_posts
     aspects = @user.aspects
-
     aspect=aspects.find_by_name(params[:aspect_name])
     render :json  => {
       :aspect_posts => aspect.posts     
     }
   end
-
   
-   def bookmarklet
-     @aspects = current_user.aspects
-     @selected_contacts = @aspects.map { |aspect| aspect.contacts }.flatten.uniq
-     @aspect_ids = @aspects.map{|x| x.id}
-     render :layout => nil
-   end
+  # GET the details of all the aspects the current users
+  # it also lists the contacts that have visibility right on that aspect
+  def aspects
+    render :json{
+      :aspects = @user.aspects      
+    }
+  end
+    
+    
+  
 
 
-
-# # # POST create ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## #
+# # #  CREATE POST with POST request ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## #
    
    ## POST status_message => text, aspect_ids, photos, services,  
    # taken from StatusMessagesController.rb
@@ -94,6 +90,31 @@ class ApisController < ApplicationController
   
 # # END POST create # ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## #
   
+  # POST a new aspect for a user
+  # modified from aspects_controller.rb
+  def aspects
+    current_user=@user
+    @aspect=current_user.aspects.create(params[:aspect])
+    if @aspect.valid?
+   
+   #controls if I am adding an aspect with or without a person to attach to it! GENIAL :D
+      if params[:aspect][:person_id].present?
+        @person = Person.where(:id => params[:aspect][:person_id]).first
+
+        if @contact = current_user.contact_for(@person)
+          @contact.aspects << @aspect
+        else
+          @contact = current_user.share_with(@person, @aspect)
+        end
+      end
+      render :json => {:create => @aspect.name, :status => '201'}
+    else
+      render :json{
+        :error = 'aspects.create.failure' , :status => '422'     
+      }
+    end
+  end
+    
   
   private
   def set_user_from_oauth
