@@ -31,11 +31,11 @@ class ApisController < ApplicationController
     aspect=aspects.find_by_name(params[:aspect_name])
     
     if aspect.empty?    
-      render :json  => {:aspect_posts => aspect.posts}
+      render :json  => {:aspects => aspects}
     else
       render :json  => {
-      
-        :aspects => aspects 
+      :aspect_posts => aspect.posts
+         
     }
   end
   end
