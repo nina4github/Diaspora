@@ -31,7 +31,7 @@ class ApisController < ApplicationController
   # GET the details of all the aspects the current users
   # it also lists the contacts that have visibility right on that aspect
   def aspects
-    render :json{
+    render :json =>ß {
       :aspects = @user.aspects      
     }
   end
