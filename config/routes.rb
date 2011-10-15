@@ -156,10 +156,10 @@ Diaspora::Application.routes.draw do
   scope 'api/v0', :controller => :apis do
     get :me
     get :posts
-    get :aspect_posts
+    get "posts/:aspectname" =>:aspect_posts
     get :aspects
-    post :create
-    post :newaspect
+    post "posts/:aspectname" => :create
+    post "aspects" => :newaspect
   end
 
 
