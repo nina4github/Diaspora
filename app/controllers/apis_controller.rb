@@ -24,7 +24,7 @@ class ApisController < ApplicationController
     aspects = @user.aspects
     aspect=aspects.find_by_name(params[:aspect_name])
     aspect_ids = [aspect.id] 
-    @stream = AspectStream.new(current_user, aspect_ids,
+    @stream = AspectStream.new(@user, aspect_ids,
                                :order => session[:sort_order],
                                :max_time => params[:max_time].to_i)
     
