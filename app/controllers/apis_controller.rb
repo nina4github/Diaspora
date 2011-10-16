@@ -74,10 +74,10 @@ class ApisController < ApplicationController
 
      @status_message = current_user.build_post(:status_message, params[:status_message])
 
-     photos = Photo.where(:id => [*params[:photos]], :diaspora_handle => current_user.person.diaspora_handle)
-     unless photos.empty?
-       @status_message.photos << photos
-     end
+     #photos = Photo.where(:id => [*params[:photos]], :diaspora_handle => current_user.person.diaspora_handle)
+     #unless photos.empty?
+       #@status_message.photos << photos
+     #end
 
      if @status_message.save
        Rails.logger.info("event=create type=status_message chars=#{params[:status_message][:text].length}")
