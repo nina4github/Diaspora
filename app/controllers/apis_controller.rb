@@ -77,7 +77,7 @@ class ApisController < ApplicationController
      params[:status_message][:aspect_ids] = [aspect_id]
      params[:status_message][:public] = false
      current_user=@user
-#     normalize_public_flag!
+
 
      @status_message = current_user.build_post(:status_message, params[:status_message])
 
@@ -89,14 +89,14 @@ class ApisController < ApplicationController
      if @status_message.save
        Rails.logger.info("event=create type=status_message chars=#{params[:status_message][:text].length}")
 
-       aspects = current_user.aspects_from_ids(params[:aspect_ids])
+       aspects = current_user.aspects_from_ids(params[:status_message][:aspect_ids])
        current_user.add_to_streams(@status_message, aspects)
        receiving_services = current_user.services.where(:type => params[:services].map{|s| "Services::"+s.titleize}) if params[:services]
        current_user.dispatch_post(@status_message, :url => short_post_url(@status_message.guid), :services => receiving_services)
 
-       if request.env['HTTP_REFERER'].include?("people") # if this is a post coming from a profile page
-          flash[:notice] = t('status_messages.create.success', :names => @status_message.mentions.includes(:person => :profile).map{ |mention| mention.person.name }.join(', '))
-        end
+#       if request.env['HTTP_REFERER'].include?("people") # if this is a post coming from a profile page
+#          flash[:notice] = t('status_messages.create.success', :names => @status_message.mentions.includes(:person => :profile).map{ |mention| mention.person.name }.join(', '))
+#        end
 
        render :json => {:create =>@status_message.guid, :status => '201'}
        
@@ -110,12 +110,7 @@ class ApisController < ApplicationController
      end
    end
 
-   def normalize_public_flag!
-     public_flag = params[:status_message][:public]
-     public_flag.to_s.match(/(true)|(on)/) ? public_flag = true : public_flag = false
-     params[:status_message][:public] = public_flag
-     public_flag
-   end
+  
   
 # # END POST create # ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## #
   
