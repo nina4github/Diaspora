@@ -23,8 +23,14 @@ class ApisController < ApplicationController
   def aspect_posts
     aspects = @user.aspects
     aspect=aspects.find_by_name(params[:aspect_name])
+    aspect_ids = aspect.id
+    @stream = AspectStream.new(current_user, aspect_ids,
+                               :order => session[:sort_order],
+                               :max_time => params[:max_time].to_i)
+    
     render :json  => {
       :aspect_posts_mine => aspect.posts  
+      :aspect_posts_stream => @stream.posts
     }
   end
   
@@ -47,11 +53,6 @@ class ApisController < ApplicationController
   def aspect  
     render :json =>{
       :aspect => @user.aspects.find_by_name(params[:aspect_name])
-    }
-  end
-  def stream
-    render :json => {
-      :stream => @stream
     }
   end
 

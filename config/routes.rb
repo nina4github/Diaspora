@@ -160,7 +160,6 @@ Diaspora::Application.routes.draw do
     get :aspects
     get "aspects/:aspect_name" =>:aspect
     get "aspects/:aspect_name/contacts" => :contacts
-    get :stream
     post "posts/new" => :create
     post "aspects" => :newaspect
     
