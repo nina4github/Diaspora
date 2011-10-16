@@ -71,8 +71,8 @@ class ApisController < ApplicationController
    # taken from StatusMessagesController.rb
    ## support the creation of a new post
    def create
-     #aspect = @user.aspects.find_by_name(params[:aspect_name])
-     aspect_id="22"
+     aspect = @user.aspects.find_by_name(params[:aspect_name])
+     aspect_id = aspect.id
      # for compatibility with the code of StatusMessagesController.rb
      params[:status_message][:aspect_ids] = aspect_id
      current_user=@user
