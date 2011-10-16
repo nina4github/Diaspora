@@ -29,7 +29,7 @@ class ApisController < ApplicationController
                                :max_time => params[:max_time].to_i)
     
     render :json  => {
-      :aspect_posts_mine => aspect.posts  
+      :aspect_posts_mine => aspect.posts,
       :aspect_posts_stream => @stream.posts
     }
   end
