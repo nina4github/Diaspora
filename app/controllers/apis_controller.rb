@@ -42,18 +42,18 @@ class ApisController < ApplicationController
    render :json =>{
      :contacts=> @user.aspects.find_by_name(params[:aspect_name]).contacts
    }
-   
+ end
   # GET everything for an aspect
   def aspect  
     render :json =>{
       :aspect => @user.aspects.find_by_name(params[:aspect_name])
     }
-    
+  end
   def stream
     render :json => {
       :stream => @stream
     }
-    
+  end
 
   
 
