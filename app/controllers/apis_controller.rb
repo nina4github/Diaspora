@@ -25,7 +25,7 @@ class ApisController < ApplicationController
     aspect=aspects.find_by_name(params[:aspect_name])
     aspect_ids = [aspect.id] 
     @stream = AspectStream.new(@user, aspect_ids,
-                               :order => session[:sort_order],
+                               :order => "created_at",
                                :max_time => params[:max_time].to_i)
     
     render :json  => {
