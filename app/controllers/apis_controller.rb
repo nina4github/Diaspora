@@ -24,7 +24,7 @@ class ApisController < ApplicationController
     aspects = @user.aspects
     aspect=aspects.find_by_name(params[:aspect_name])
     render :json  => {
-      :aspect_posts => aspect.posts     
+      :aspect_posts_mine => aspect.posts  
     }
   end
   
@@ -32,11 +32,29 @@ class ApisController < ApplicationController
   # it also lists the contacts that have visibility right on that aspect
   def aspects
     render :json => {
-      :aspects => @user.aspects      
+      :aspects => @user.aspects       
     }
   end
     
+ 
+  # GET contacts for an aspect
+  def contacts
+   render :json =>{
+     :contacts=> @user.aspects.find_by_name(params[:aspect_name]).contacts
+   }
+   
+  # GET everything for an aspect
+  def aspect  
+    render :json =>{
+      :aspect => @user.aspects.find_by_name(params[:aspect_name])
+    }
     
+  def stream
+    render :json => {
+      :stream => @stream
+    }
+    
+
   
 
 
