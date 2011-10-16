@@ -58,15 +58,21 @@ class ApisController < ApplicationController
 
   
 
-
+  def bookmarklet
+       @aspects = current_user.aspects
+       @selected_contacts = @aspects.map { |aspect| aspect.contacts }.flatten.uniq
+       @aspect_ids = @aspects.map{|x| x.id}
+       render :layout => nil
+     end
+  
 # # #  CREATE POST with POST request ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## #
    
    ## POST status_message => text, aspect_ids, photos, services,  
    # taken from StatusMessagesController.rb
    ## support the creation of a new post
    def create
-     aspect= @user.aspects.find_by_name(params[:aspect_name])
-     aspect_id=aspect.id
+     #aspect = @user.aspects.find_by_name(params[:aspect_name])
+     aspect_id="22"
      # for compatibility with the code of StatusMessagesController.rb
      params[:status_message][:aspect_ids] = aspect_id
      current_user=@user
