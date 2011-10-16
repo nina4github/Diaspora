@@ -26,7 +26,7 @@ class ApisController < ApplicationController
     aspect_ids = [aspect.id] 
     @stream = AspectStream.new(@user, aspect_ids,
                                :order => "created_at",
-                               :max_time => params[:max_time].to_i)
+                               :max_time => Time.now.to_i)
     
     render :json  => {
       :aspect_posts_mine => aspect.posts,
