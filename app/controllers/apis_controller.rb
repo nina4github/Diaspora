@@ -75,8 +75,9 @@ class ApisController < ApplicationController
      aspect_id = aspect.id
      # for compatibility with the code of StatusMessagesController.rb
      params[:status_message][:aspect_ids] = [aspect_id]
+     params[:status_message][:public] = true
      current_user=@user
-     normalize_public_flag!
+    # normalize_public_flag!
 
      @status_message = current_user.build_post(:status_message, params[:status_message])
 
