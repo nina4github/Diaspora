@@ -163,7 +163,7 @@ class ApisController < ApplicationController
     contacts = @user.aspects.find_by_name(params[:activity_name]).contacts
     i=0
     for contact in contacts
-      contact_ids[i++]=contact.person.id
+      contact_ids[i+1]=contact.person.id
     end
     
     @posts.include(:mentions).where(['mentions.person_id in (?)',contact_ids])
