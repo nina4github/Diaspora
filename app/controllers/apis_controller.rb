@@ -164,7 +164,7 @@ class ApisController < ApplicationController
     i=0
     contact_ids = Array.new
     for contact in contacts
-      contact_ids[i+1] => contact.person.id
+      contact_ids[i+1] = contact.person.id
     end
     
     @posts.include(:mentions).where(['mentions.person_id in (?)',contact_ids])
