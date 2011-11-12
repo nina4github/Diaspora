@@ -183,6 +183,7 @@ class ApisController < ApplicationController
     max_time = max_time ? Time.at(max_time.to_i) : Time.now
     @posts = @posts.where(StatusMessage.arel_table[:created_at].lt(max_time))
     @posts = @posts.includes({:author => :profile}, :comments, :photos).order('posts.created_at DESC').limit(15)
+    #@posts = @posts.includes({:author => :profile}, :comments, :photos).order('posts.created_at DESC').limit(15)
 
     @commenting_disabled = true
 
