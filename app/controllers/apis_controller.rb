@@ -150,13 +150,21 @@ class ApisController < ApplicationController
   ##
   def tags
     params[:tag_name].downcase!
-    findtags(params[:tag_name],params[:max_time], params[:only_posts], params[:page])
+   @result = findtags(params[:tag_name],params[:max_time], params[:only_posts], params[:page])
+   render :json => {:tagfeed=> @result}
    
   end
   
   def activities
     params[:activity_name].downcase!
-    findtags(params[:activity_name],params[:max_time], "true", params[:page])
+    @posts = findtags(params[:activity_name],params[:max_time], "true", params[:page]) # retrieve only posts
+    
+    # take only the posts from my contacts
+    contacts = @user.aspects.find_by_name(params[:activity_name]).contacts
+    
+    @posts = @posts.where(Mention.)
+    @posts.include(:mentions).where(['mentions.person_id in (?)',contacts])
+    render :json => {:posts => @posts}
   
     
   end
@@ -189,12 +197,14 @@ class ApisController < ApplicationController
 
     if only_posts == 'true'
       #render :partial => 'shared/stream', :locals => {:posts => @posts}
-      render :json => {:posts => @posts}
+      #render :json => {:posts => @posts}
+      return @posts
     else
       profiles = Profile.tagged_with(name).where(:searchable => true).select('profiles.id, profiles.person_id')
       @people = Person.where(:id => profiles.map{|p| p.person_id}).paginate(:page => page, :per_page => 15)
       @people_count = Person.where(:id => profiles.map{|p| p.person_id}).count
-      render :json => {:people => @people}
+      #render :json => {:people => @people}
+      return @people
     end
     
   end  
