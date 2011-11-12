@@ -161,9 +161,14 @@ class ApisController < ApplicationController
     
     # take only the posts from my contacts
     contacts = @user.aspects.find_by_name(params[:activity_name]).contacts
+    i=0
+    contact_ids=
+    for contact in contacts
+      contact_ids[i++]=contact.person.id
+    end
+    contact_ids=
     
-    @posts = @posts.where(Mention.)
-    @posts.include(:mentions).where(['mentions.person_id in (?)',contacts])
+    @posts.include(:mentions).where(['mentions.person_id in (?)',contact_ids])
     render :json => {:posts => @posts}
   
     
