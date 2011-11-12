@@ -140,10 +140,7 @@ class ApisController < ApplicationController
   end
     
   
-  private
-  def set_user_from_oauth
-    @user = request.env['oauth2'].resource_owner
-  end
+  
   
   
   ##
@@ -201,5 +198,8 @@ class ApisController < ApplicationController
     
   end  
   
-   
+   private
+   def set_user_from_oauth
+     @user = request.env['oauth2'].resource_owner
+   end
 end
