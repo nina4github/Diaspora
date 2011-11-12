@@ -167,7 +167,7 @@ class ApisController < ApplicationController
       contact_ids[i+1] = contact.person.id
     end
     
-    @posts.include(:mentions).where(['mentions.person_id in (?)',contact_ids])
+    @posts.includes(:mentions).where(['mentions.person_id in (?)',contact_ids])
     render :json => {:posts => @posts}
   
     
