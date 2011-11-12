@@ -150,7 +150,7 @@ class ApisController < ApplicationController
   ##
   def tags
     params[:tag_name].downcase!
-    findtags(params[:activity_name],params[:max_time], params[:only_posts], params[:page])
+    findtags(params[:tag_name],params[:max_time], params[:only_posts], params[:page])
    
   end
   
