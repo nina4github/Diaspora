@@ -151,9 +151,21 @@ class ApisController < ApplicationController
   # get tags
   #
   ##
-  def tag
+  def tags
 
-    params[:name].downcase!
+    findtags(params[:activity_name],params[:max_time], params[:only_posts], params[:page])
+   
+  end
+  
+  def activities
+    params[:activity_name].downcase!
+    findtags(params[:activity_name],params[:max_time], "true", params[:page])
+  
+    
+  end
+
+  def findtags(name, max_time, only_posts, page )
+   name.downcase!
     @aspect = :tag
     if current_user
       @posts = StatusMessage.
@@ -169,26 +181,25 @@ class ApisController < ApplicationController
     end
 
     params[:prefill] = "##{params[:name]} "
-    @posts = @posts.tagged_with(params[:name])
+    @posts = @posts.tagged_with(name)
 
-    max_time = params[:max_time] ? Time.at(params[:max_time].to_i) : Time.now
+    max_time = max_time ? Time.at(max_time.to_i) : Time.now
     @posts = @posts.where(StatusMessage.arel_table[:created_at].lt(max_time))
     @posts = @posts.includes({:author => :profile}, :comments, :photos).order('posts.created_at DESC').limit(15)
 
     @commenting_disabled = true
 
-    if params[:only_posts] == 'true'
+    if only_posts == 'true'
       #render :partial => 'shared/stream', :locals => {:posts => @posts}
       render :json => {:posts => @posts}
     else
-      profiles = Profile.tagged_with(params[:name]).where(:searchable => true).select('profiles.id, profiles.person_id')
-      @people = Person.where(:id => profiles.map{|p| p.person_id}).paginate(:page => params[:page], :per_page => 15)
+      profiles = Profile.tagged_with(name).where(:searchable => true).select('profiles.id, profiles.person_id')
+      @people = Person.where(:id => profiles.map{|p| p.person_id}).paginate(:page => page, :per_page => 15)
       @people_count = Person.where(:id => profiles.map{|p| p.person_id}).count
       render :json => {:people => @people}
     end
-   
-  end
-  
+    
+  end  
   
    
 end
