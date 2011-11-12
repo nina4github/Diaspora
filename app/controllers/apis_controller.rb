@@ -149,7 +149,7 @@ class ApisController < ApplicationController
   #
   ##
   def tags
-
+    params[:activity_name].downcase!
     findtags(params[:activity_name],params[:max_time], params[:only_posts], params[:page])
    
   end
@@ -162,7 +162,7 @@ class ApisController < ApplicationController
   end
 
   def findtags(name, max_time, only_posts, page )
-   name.downcase!
+   
     @aspect = :tag
     if current_user
       @posts = StatusMessage.
