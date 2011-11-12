@@ -146,5 +146,49 @@ class ApisController < ApplicationController
   end
   
   
+  ##
+  # TAGs
+  # get tags
+  #
+  ##
+  def tag
+
+    params[:name].downcase!
+    @aspect = :tag
+    if current_user
+      @posts = StatusMessage.
+        joins("LEFT OUTER JOIN post_visibilities ON post_visibilities.post_id = posts.id").
+        joins("LEFT OUTER JOIN contacts ON contacts.id = post_visibilities.contact_id").
+        where(Contact.arel_table[:user_id].eq(current_user.id).or(
+          StatusMessage.arel_table[:public].eq(true).or(
+            StatusMessage.arel_table[:author_id].eq(current_user.person.id)
+          )
+        )).select('DISTINCT posts.*')
+    else
+      @posts = StatusMessage.all_public
+    end
+
+    params[:prefill] = "##{params[:name]} "
+    @posts = @posts.tagged_with(params[:name])
+
+    max_time = params[:max_time] ? Time.at(params[:max_time].to_i) : Time.now
+    @posts = @posts.where(StatusMessage.arel_table[:created_at].lt(max_time))
+    @posts = @posts.includes({:author => :profile}, :comments, :photos).order('posts.created_at DESC').limit(15)
+
+    @commenting_disabled = true
+
+    if params[:only_posts] == 'true'
+      #render :partial => 'shared/stream', :locals => {:posts => @posts}
+      render :json => {:posts => @posts}
+    else
+      profiles = Profile.tagged_with(params[:name]).where(:searchable => true).select('profiles.id, profiles.person_id')
+      @people = Person.where(:id => profiles.map{|p| p.person_id}).paginate(:page => params[:page], :per_page => 15)
+      @people_count = Person.where(:id => profiles.map{|p| p.person_id}).count
+      render :json => {:people => @people}
+    end
+   
+  end
+  
+  
    
 end
