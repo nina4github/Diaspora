@@ -150,6 +150,7 @@ class ApisController < ApplicationController
   ##
   def tags
     params[:tag_name].downcase!
+
    @result = findtags(params[:tag_name],params[:max_time], params[:only_posts], params[:page])
    render :json => {:tagfeed=> @result}
    
@@ -157,7 +158,7 @@ class ApisController < ApplicationController
   
   def activities
     params[:activity_name].downcase!
-    @posts = findtags(params[:activity_name],params[:max_time], "true", params[:page]) # retrieve only posts
+    # @posts = findtags(params[:activity_name],params[:max_time], "true", params[:page]) # retrieve only posts
     
     # take only the posts from my contacts
     contacts = @user.aspects.find_by_name(params[:activity_name]).contacts
@@ -167,10 +168,27 @@ class ApisController < ApplicationController
       contact_ids[i+1] = contact.person.id
     end
     
-    @posts.includes(:mentions).where(['mentions.person_id in (?)',contact_ids])
-    render :json => {:posts => @posts}
-  
     
+    #GET POSTS
+#    @aspect = :tag
+    @posts = StatusMessage.
+      includes(:mentions).
+      joins("LEFT OUTER JOIN post_visibilities ON post_visibilities.post_id = posts.id").
+      joins("LEFT OUTER JOIN contacts ON contacts.id = post_visibilities.contact_id").
+      where(Contact.arel_table[:user_id].eq(current_user.id).or(
+        StatusMessage.arel_table[:public].eq(true).or(
+          StatusMessage.arel_table[:author_id].eq(current_user.person.id)
+        )).or(:mention => {person_id => contact_ids})).select('DISTINCT posts.*')
+
+#    params[:prefill] = "##{params[:activity_name]} "
+    @posts = @posts.tagged_with(params[:activity_name])
+
+    max_time = params[:max_time] ? Time.at(params[:max_time].to_i) : Time.now
+    @posts = @posts.where(StatusMessage.arel_table[:created_at].lt(max_time))
+    @posts = @posts.includes({:author => :profile}, :comments, :photos).order('posts.created_at DESC').limit(15)
+    #
+    
+    render :json => {:posts => @posts}
   end
 
   def findtags(name, max_time, only_posts, page )
@@ -212,6 +230,8 @@ class ApisController < ApplicationController
     end
     
   end  
+  
+  
   
    private
    def set_user_from_oauth
