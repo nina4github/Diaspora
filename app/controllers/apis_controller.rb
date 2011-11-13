@@ -180,7 +180,7 @@ class ApisController < ApplicationController
       where(Contact.arel_table[:user_id].eq(@user.id).or(
         StatusMessage.arel_table[:public].eq(true).or(
           StatusMessage.arel_table[:author_id].eq(@user.person.id)
-        )).or(:mention => {person_id => contact_ids})).select('DISTINCT posts.*')
+        )).or(:mention => {:person_id => contact_ids})).select('DISTINCT posts.*')
 
 #    params[:prefill] = "##{params[:activity_name]} "
     @posts = @posts.tagged_with(params[:activity_name])
