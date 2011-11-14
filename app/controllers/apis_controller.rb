@@ -45,10 +45,15 @@ class ApisController < ApplicationController
  
   # GET contacts for an aspect
   def contacts
+    @contacts = @user.aspects.find_by_name(params[:aspect_name]).contacts
+    @contacts = @contacts.includes(:person=>:profile)
    render :json =>{
-     :contacts=> @user.aspects.find_by_name(params[:aspect_name]).contacts
+     :contacts=> @contacts
    }
  end
+ 
+ 
+ 
   # GET everything for an aspect
   def aspect  
     render :json =>{
