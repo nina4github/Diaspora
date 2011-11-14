@@ -56,7 +56,7 @@ class ApisController < ApplicationController
  end
  
  def profiles
-   @person_ids= params[:ids]
+   @person_ids= params[:ids].to_a
    @profiles = Hash.new
    
    @person_ids.each do |person_id|
