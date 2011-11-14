@@ -52,7 +52,7 @@ class ApisController < ApplicationController
    render :json =>{
      :contacts=> @contacts, 
      :contactsprofiles=> @cp}
-   }
+   
  end
  
  def profiles
