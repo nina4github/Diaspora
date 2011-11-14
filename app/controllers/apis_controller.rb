@@ -56,7 +56,8 @@ class ApisController < ApplicationController
  end
  
  def profiles
-   @person_ids= params[:ids].to_a
+#   @person_ids= params[:ids].
+   @person_ids = params[:ids].split("[")[1].split("]")[0].split(",").map { |s| s.to_i }
    @profiles = Hash.new
    
    @person_ids.each do |person_id|
