@@ -186,7 +186,8 @@ class ApisController < ApplicationController
     i=0
     contact_ids = Array.new
     for contact in contacts
-      contact_ids[i+1] = contact.person.id
+      contact_ids[i] = contact.person.id
+      i=i+1
     end
     
     
