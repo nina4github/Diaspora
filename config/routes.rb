@@ -160,6 +160,7 @@ Diaspora::Application.routes.draw do
     get :aspects
     get "aspects/:aspect_name" =>:aspect
     get "aspects/:aspect_name/contacts" => :contacts
+    get :profiles # get params[:ids] of array of people ids
     get "tags/:tag_name/" =>:tags
     get "activities/:activity_name" => :activities # retrieve all the posts with a mention to my activity_name friends and tagged activity_name (produced by their activity objects)
     post :create

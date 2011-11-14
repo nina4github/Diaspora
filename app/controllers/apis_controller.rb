@@ -46,12 +46,26 @@ class ApisController < ApplicationController
   # GET contacts for an aspect
   def contacts
     @contacts = @user.aspects.find_by_name(params[:aspect_name]).contacts
-    @contacts = @contacts.includes(:person=>:profile)
+      
+    @cp = User.includes(:aspects => {:contacts => {:person => :profile}}).where(User.arel_table[:id].eq(3).and(Aspect.arel_table[:name].eq(params[:aspect_name])))
+      
    render :json =>{
-     :contacts=> @contacts
+     :contacts=> @contacts, 
+     :contactsprofiles=> @cp}
    }
  end
  
+ def profiles
+   @person_ids= params[:ids]
+   @profiles = Hash.new
+   
+   @person_ids.each do |person_id|
+     @profiles[person_id] = Person.find_by_owner_id(person_id).profile
+   end
+   render :json =>{
+    :profiles => @profiles
+   }
+ end
  
  
   # GET everything for an aspect
