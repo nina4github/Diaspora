@@ -47,19 +47,22 @@ class ApisController < ApplicationController
   def contacts
     @contacts = @user.aspects.find_by_name(params[:aspect_name]).contacts
       
-    @cp = User.includes(:aspects => {:contacts => {:person => :profile}}).where(User.arel_table[:id].eq(3).and(Aspect.arel_table[:name].eq(params[:aspect_name])))
+    # TODO  review - NOVEMBER "2011"
+    # this is supposed to be a more efficient way to retrieve in the same request the contact information and the corresponding profile informations
+    #
+    #@cp = User.includes(:aspects => {:contacts => {:person => :profile}}).where(User.arel_table[:id].eq(@user.id).and(Aspect.arel_table[:name].eq(params[:aspect_name])))
       
    render :json =>{
-     :contacts=> @contacts, 
-     :contactsprofiles=> @cp}
+     :contacts=> @contacts
+     #, :contactsprofiles=> @cp
+     }
    
  end
  
+ 
  def profiles
-#   @person_ids= params[:ids].
-   @person_ids = params[:ids].split("[")[1].split("]")[0].split(",").map { |s| s.to_i }
+   @person_ids = JSON.parse(params[:ids])
    @profiles = Hash.new
-   
    @person_ids.each do |person_id|
      @profiles[person_id] = Person.find_by_owner_id(person_id).profile
    end
@@ -172,15 +175,15 @@ class ApisController < ApplicationController
   ##
   def tags
     params[:tag_name].downcase!
-
+    # cut and paste from tag_controller
    @result = findtags(params[:tag_name],params[:max_time], params[:only_posts], params[:page])
    render :json => {:tagfeed=> @result}
    
   end
   
+  
   def activities
     params[:activity_name].downcase!
-    # @posts = findtags(params[:activity_name],params[:max_time], "true", params[:page]) # retrieve only posts
     
     # take only the posts from my contacts
     contacts = @user.aspects.find_by_name(params[:activity_name]).contacts
@@ -192,8 +195,8 @@ class ApisController < ApplicationController
     end
     
     
+    # refinement from tag_controller
     #GET POSTS
-#    @aspect = :tag
     @posts = StatusMessage.
       includes(:mentions).
       joins("LEFT OUTER JOIN post_visibilities ON post_visibilities.post_id = posts.id").
