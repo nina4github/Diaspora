@@ -19,21 +19,8 @@ class ApisController < ApplicationController
     }
   end
   
-  # GET all posts within a specific aspect, the aspect belongs to the current user
-  def aspect_posts
-    aspects = @user.aspects
-    aspect=aspects.find_by_name(params[:aspect_name])
-    aspect_ids = [aspect.id] 
-    @stream = AspectStream.new(@user, aspect_ids,
-                               :order => "created_at",
-                               :max_time => Time.now.to_i)
-    
-    render :json  => {
-      :aspect_posts_mine => aspect.posts,
-      :aspect_posts_stream => @stream.posts
-    }
-  end
   
+  # GET aspects
   # GET the details of all the aspects the current users
   # it also lists the contacts that have visibility right on that aspect
   def aspects
@@ -41,22 +28,68 @@ class ApisController < ApplicationController
       :aspects => @user.aspects       
     }
   end
+  
+  
+  
+  def fullstream
+    aspects = @user.aspects
+
+    activityobject = aspects.find_by_name(params[:aspectname]+'objects')
+    activityfriends = aspects.find_by_name(params[:aspectname]+'friends')
     
+    
+    # this might work only if friends do not share other activities with me :)
+    aspect_ids = [activityobjects.id, activityfriends.id]
+    @stream= AspectStream.new(@user, aspect_ids,
+                               :order => "created_at",
+                               :max_time => Time.now.to_i)
+   
+    users = Array.new
+    i=0
+    # ask to all my contacts their activityobject streams
+    activityfriends.contacts.each do |contact|
+      users[i]= User.find(contact.person_id)
+      aspectfriend_id = [users[i].aspects.find_by_name(params[:aspectname]+'objects')]
+      @streamfriends[i] = AspectStream.new(users[i],aspectfriend_id,
+                                :order => "created_at",
+                                :max_time => Time.now.to_i)
+      i+=1
+    end
+     
+    render :json  => {
+     :stream =>@stream,
+     :stream_friends =>@streamfriends
+    }
+  end
+  
+  # GET all posts within a specific aspect, the aspect belongs to the current user
+  def stream
+     aspects = @user.aspects
+    ids = [aspects.find_by_name(params[:aspectname]).id]
+    @stream= AspectStream.new(@user, ids,
+                               :order => "created_at",
+                               :max_time => Time.now.to_i)
+      render :json  => {
+        # :aspect_posts_mine => aspect.posts,
+       :stream => @stream.posts
+    }
+    
+  end
  
   # GET contacts for an aspect
+  # (review 17Nov2011)
   def contacts
     @contacts = @user.aspects.find_by_name(params[:aspect_name]).contacts
-      
-    # TODO  review - NOVEMBER "2011"
-    # this is supposed to be a more efficient way to retrieve in the same request the contact information and the corresponding profile informations
-    #
-    #@cp = User.includes(:aspects => {:contacts => {:person => :profile}}).where(User.arel_table[:id].eq(@user.id).and(Aspect.arel_table[:name].eq(params[:aspect_name])))
+    @response = Array.new
+    i =0 
+    @contacts.each do |contact|
+      @response[i] = contact.person.profile
+      i+1
+    end
       
    render :json =>{
-     :contacts=> @contacts
-     #, :contactsprofiles=> @cp
+     :contacts=> @response
      }
-   
  end
  
  
@@ -70,23 +103,7 @@ class ApisController < ApplicationController
     :profiles => @profiles
    }
  end
- 
- 
-  # GET everything for an aspect
-  def aspect  
-    render :json =>{
-      :aspect => @user.aspects.find_by_name(params[:aspect_name])
-    }
-  end
 
-  
-
-  def bookmarklet
-       @aspects = current_user.aspects
-       @selected_contacts = @aspects.map { |aspect| aspect.contacts }.flatten.uniq
-       @aspect_ids = @aspects.map{|x| x.id}
-       render :layout => nil
-     end
   
 # # #  CREATE POST with POST request ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## #
    

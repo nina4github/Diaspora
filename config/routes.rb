@@ -156,15 +156,18 @@ Diaspora::Application.routes.draw do
   scope 'api/v0', :controller => :apis do
     get :me
     get :posts
-    get :aspect_posts
-    get :aspects
-    get "aspects/:aspect_name" =>:aspect
-    get "aspects/:aspect_name/contacts" => :contacts
+    get :aspects 
+#    get "aspects/:aspectname" => :stream_old
+    get "aspects/:aspectname" => :stream
+    get "aspects/:aspectname/fullstream" => :fullstream
+    get "aspects/:aspectname/contacts" => :contacts
+    
     get :profiles # get params[:ids] of array of people ids
     get "tags/:tag_name/" =>:tags
-    get "activities/:activity_name" => :activities # retrieve all the posts with a mention to my activity_name friends and tagged activity_name (produced by their activity objects)
-    post :create
+    
     post "aspects" => :newaspect
+    post :create # new post
+   
     
   end
 
