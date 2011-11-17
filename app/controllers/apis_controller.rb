@@ -47,6 +47,7 @@ class ApisController < ApplicationController
     users = Array.new
     i=0
     # ask to all my contacts their activityobject streams
+    @streamfriends = Array.new
     activityfriends.contacts.each do |contact|
       users[i]= User.find(contact.person_id)
       aspectfriend_id = [users[i].aspects.find_by_name(params[:aspectname]+'objects')]
