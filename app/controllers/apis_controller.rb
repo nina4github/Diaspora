@@ -47,11 +47,11 @@ class ApisController < ApplicationController
     users = Array.new
     i=0
     # ask to all my contacts their activityobject streams
-    @streamfriends = Array.new
+    @streamfriends = Hash.new
     activityfriends.contacts.each do |contact|
       users[i]= User.find(contact.person_id)
       aspectfriend_id = [users[i].aspects.find_by_name(params[:aspectname]+'objects')]
-      @streamfriends[i] = AspectStream.new(users[i],aspectfriend_id,
+      @streamfriends[users[i].id] = AspectStream.new(users[i],aspectfriend_id,
                                 :order => "created_at",
                                 :max_time => Time.now.to_i).posts
       i+=1
