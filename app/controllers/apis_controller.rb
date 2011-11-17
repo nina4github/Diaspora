@@ -34,7 +34,7 @@ class ApisController < ApplicationController
   def fullstream
     aspects = @user.aspects
 
-    activityobject = aspects.find_by_name(params[:aspectname]+'objects')
+    activityobjects = aspects.find_by_name(params[:aspectname]+'objects')
     activityfriends = aspects.find_by_name(params[:aspectname]+'friends')
     
     
