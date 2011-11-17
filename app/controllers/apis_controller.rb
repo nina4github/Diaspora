@@ -58,8 +58,8 @@ class ApisController < ApplicationController
     end
      
     render :json  => {
-     :stream =>@stream,
-     :stream_friends =>@streamfriends
+     :stream =>@stream.posts,
+     :stream_friends =>@streamfriends.posts
     }
   end
   
