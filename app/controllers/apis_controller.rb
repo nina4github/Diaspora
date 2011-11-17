@@ -80,7 +80,7 @@ class ApisController < ApplicationController
   # GET contacts for an aspect
   # (review 17Nov2011)
   def contacts
-    @contacts = @user.aspects.find_by_name(params[:aspect_name]).contacts
+    @contacts = @user.aspects.find_by_name(params[:aspectname]).contacts
     @response = Array.new
     i =0 
     @contacts.each do |contact|
