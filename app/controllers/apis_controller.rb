@@ -42,7 +42,7 @@ class ApisController < ApplicationController
     aspect_ids = [activityobjects.id, activityfriends.id]
     @stream= AspectStream.new(@user, aspect_ids,
                                :order => "created_at",
-                               :max_time => Time.now.to_i)
+                               :max_time => Time.now.to_i).posts
    
     users = Array.new
     i=0
@@ -53,13 +53,13 @@ class ApisController < ApplicationController
       aspectfriend_id = [users[i].aspects.find_by_name(params[:aspectname]+'objects')]
       @streamfriends[i] = AspectStream.new(users[i],aspectfriend_id,
                                 :order => "created_at",
-                                :max_time => Time.now.to_i)
+                                :max_time => Time.now.to_i).posts
       i+=1
     end
      
     render :json  => {
-     :stream =>@stream.posts,
-     :stream_friends =>@streamfriends.posts
+     :stream =>@stream,
+     :stream_friends =>@streamfriends
     }
   end
   
