@@ -50,7 +50,7 @@ class ApisController < ApplicationController
     @response = @tmp                           
                                                        
     render :json  => {
-       :stream => @stream.posts
+       :stream => @response
     }
     
   end
