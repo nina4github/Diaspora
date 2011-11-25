@@ -47,10 +47,10 @@ class ApisController < ApplicationController
         @tmp << msg
       end
     end
-    @response = @tmp                           
+                             
                                                        
     render :json  => {
-       :stream => @response
+       :stream => @tmp
     }
     
   end
