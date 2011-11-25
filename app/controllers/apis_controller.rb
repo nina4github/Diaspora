@@ -77,14 +77,13 @@ class ApisController < ApplicationController
      @tmp = Array.new
      
      @people_ids.each do |id|
-       @tmp << @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%" + @tag  + "%"}])
+       @tmp << @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%" + @tag  + "%"}]).first
 
      end
     
     # return a list of the last status for each member of the aspect, the user included
-      render :json  => {
-       :stream => @tmp
-    }
+      render :json  =>{
+         :stream => @tmp}
     
   end
   
