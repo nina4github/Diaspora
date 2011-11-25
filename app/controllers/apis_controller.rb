@@ -43,7 +43,7 @@ class ApisController < ApplicationController
     @tmp = Array.new
 
     @stream.posts.each do |msg|
-      if msg.text.include? '#'+params[:id]+'<' #this is really hugly but it is a way to check for tags that we know will be a hash tag
+      if msg.text.include? '#'+params[:aspectname].to_s+'<' #this is really hugly but it is a way to check for tags that we know will be a hash tag
         @tmp << msg
       end
     end
