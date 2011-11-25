@@ -31,51 +31,63 @@ class ApisController < ApplicationController
   
   
   
-  def fullstream
-    aspects = @user.aspects
-
-    activityobjects = aspects.find_by_name(params[:aspectname]+'objects')
-    activityfriends = aspects.find_by_name(params[:aspectname]+'friends')
-    
-    
-    # this might work only if friends do not share other activities with me :)
-    aspect_ids = [activityobjects.id, activityfriends.id]
-    @stream= AspectStream.new(@user, aspect_ids,
-                               :order => "created_at",
-                               :max_time => Time.now.to_i).posts
-   
-    users = Array.new
-    i=0
-    # ask to all my contacts their activityobject streams
-    @streamfriends = Hash.new
-    activityfriends.contacts.each do |contact|
-      users[i]= User.find(contact.person_id)
-      aspectfriend_id = [users[i].aspects.find_by_name(params[:aspectname]+'objects')]
-      @streamfriends[users[i].id] = AspectStream.new(users[i],aspectfriend_id,
-                                :order => "created_at",
-                                :max_time => Time.now.to_i).posts
-      i+=1
-    end
-     
-    render :json  => {
-     :stream =>@stream,
-     :stream_friends =>@streamfriends
-    }
-  end
+ 
   
   # GET all posts within a specific aspect, the aspect belongs to the current user
   def stream
-     aspects = @user.aspects
+    aspects = @user.aspects
     ids = [aspects.find_by_name(params[:aspectname]).id]
     @stream= AspectStream.new(@user, ids,
                                :order => "created_at",
                                :max_time => Time.now.to_i)
-      render :json  => {
-        # :aspect_posts_mine => aspect.posts,
+    @tmp = Array.new
+
+    @stream.posts.each do |msg|
+      if msg.text.includes? '#'+params[:id].to_s+'<' #this is really hugly but it is a way to check for tags that we know will be a hash tag
+        @tmp << msg
+      end
+    end
+    @response = @tmp                           
+                                                       
+    render :json  => {
        :stream => @stream.posts
     }
     
   end
+  
+  
+  # to check
+  def last
+    aspects = @user.aspects
+    ids = [aspects.find_by_name(params[:aspectname]).id]
+   @max_time =Time.now.to_i
+   @stream= AspectStream.new(@user, ids,
+                              :order => "created_at",
+                              :max_time => Time.now.to_i)
+   
+  # retrieve the last status for each distinct contact
+    
+    @contacts = @user.aspects.find_by_name(params[:aspectname]).contacts
+    @people_ids = Array.new
+    @people_ids << @user.id
+    @contacts.each do |contact|
+       @people_ids << contact.user_id
+     end
+     @tmp = Array.new
+     
+     @people_ids.each do |id|
+       @tmp << @stream.posts.where(:author_id => id).last
+     end
+    
+    # return a list of the last status for each member of the aspect, the user included
+      render :json  => {
+       :stream => @tmp
+    }
+    
+  end
+  
+  
+  
  
   # GET contacts for an aspect
   # (review 17Nov2011)
@@ -274,6 +286,51 @@ class ApisController < ApplicationController
     end
     
   end  
+  
+  
+  #POST create a new group defined with an activityname = aspect name and an array of user_ids that will share this aspect 
+  # reciprocal construction of an aspect
+  # params[:users] = array of users ids
+  # params[:activity] = string with the name of the aspect to create
+  #
+  # USERS MUST have already been created!!
+  #
+  def group
+    
+    @user_ids = JSON.parse(params[:users]) # array of ids
+    @aspect_name = params[:activity] # string
+    
+    # for each user I need to create a new aspect with this name 
+    #   if it does not exists already create it
+    #   else do nothing
+    #   I need to add the users as contacts
+    #   if they are already included do nothing
+    #   else add contacts to aspect 
+    
+    @tmp_ids = @user_ids 
+    @user_ids.each do |user|
+      current_user = User.find(user)
+      if current_user.aspects.find_by_name(@aspect_name).nil?
+        @aspect = current_user.aspects.create(@aspect_name)
+      else
+        @aspect = current_user.aspects.find_by_name(@aspect_name)
+      end
+      if @aspect.valid?
+        # foreach user_ids (different than the current one :))
+        @tmp_ids.each do |id|
+          if user!=id # I do this with all the ids, except the user I am creating the aspect for
+            @person = Person.where(:id => id)
+            if @contact = current_user.contact_for(@person)
+              @contact.aspects << @aspect
+            else
+              @contact = current_user.share_with(@person, @aspect)
+            end
+          end
+        end # end add contacts cycle
+      end
+    end # end add aspect cycle
+  end
+  
   
   
   

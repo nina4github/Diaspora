@@ -167,6 +167,7 @@ Diaspora::Application.routes.draw do
     
     post "aspects" => :newaspect
     post :create # new post
+    post :group
    
     
   end
