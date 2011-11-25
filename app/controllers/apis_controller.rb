@@ -320,7 +320,7 @@ class ApisController < ApplicationController
         # foreach user_ids (different than the current one :))
         @tmp_ids.each do |id|
           if user!=id # I do this with all the ids, except the user I am creating the aspect for
-            @person = Person.where(:id => id)
+            @person = Person.find(id)
             if @contact = current_user.contact_for(@person)
               @contact.aspects << @aspect
             else
