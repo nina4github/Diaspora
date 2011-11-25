@@ -43,7 +43,7 @@ class ApisController < ApplicationController
     @tmp = Array.new
 
     @stream.posts.each do |msg|
-      if msg.text.includes? '#'+params[:id].to_s+'<' #this is really hugly but it is a way to check for tags that we know will be a hash tag
+      if msg.text.include? '#'+params[:id].to_s+'<' #this is really hugly but it is a way to check for tags that we know will be a hash tag
         @tmp << msg
       end
     end
@@ -288,6 +288,7 @@ class ApisController < ApplicationController
   end  
   
   
+  # works
   #POST create a new group defined with an activityname = aspect name and an array of user_ids that will share this aspect 
   # reciprocal construction of an aspect
   # params[:users] = array of users ids
