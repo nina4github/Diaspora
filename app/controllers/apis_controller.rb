@@ -322,8 +322,10 @@ class ApisController < ApplicationController
         @tmp_ids.each do |id|
           if user!=id # I do this with all the ids, except the user I am creating the aspect for
             @person = Person.find(id)
-            if @contact = current_user.contact_for(@person)
-              @contact.aspects << @aspect
+            if @contact = current_user.contact_for(@person)  
+              if @contact.aspects.find(@aspect.id).nil?
+                @contact.aspects << @aspect
+              end
             else
               @contact = current_user.share_with(@person, @aspect)
             end
