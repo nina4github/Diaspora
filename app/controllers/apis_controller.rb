@@ -310,8 +310,9 @@ class ApisController < ApplicationController
     @tmp_ids = @user_ids 
     @user_ids.each do |user|
       current_user = User.find(user)
+     
       if current_user.aspects.find_by_name(params[:activity]).nil?
-        @aspect = current_user.aspects.create(params[:activity])
+        @aspect = current_user.aspects.create(:name => params[:activity])  
       else
         @aspect = current_user.aspects.find_by_name(params[:activity])
       end
