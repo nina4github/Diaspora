@@ -159,8 +159,9 @@ Diaspora::Application.routes.draw do
     get :aspects 
 #    get "aspects/:aspectname" => :stream_old
     get "aspects/:aspectname" => :stream
-    get "aspects/:aspectname/fullstream" => :fullstream
     get "aspects/:aspectname/contacts" => :contacts
+    get "aspects/:aspectname/last" => :last
+    get "aspects/:aspectname/week" => :week
     
     get :profiles # get params[:ids] of array of people ids
     get "tags/:tag_name/" =>:tags

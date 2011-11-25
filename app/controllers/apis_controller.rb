@@ -58,8 +58,9 @@ class ApisController < ApplicationController
   
   # to check
   def last
-    aspects = @user.aspects
-    ids = [aspects.find_by_name(params[:aspectname]).id]
+   aspects = @user.aspects
+   ids = [aspects.find_by_name(params[:aspectname]).id]
+   @tag = params[:aspectname]
    @max_time =Time.now.to_i
    @stream= AspectStream.new(@user, ids,
                               :order => "created_at",
@@ -76,7 +77,8 @@ class ApisController < ApplicationController
      @tmp = Array.new
      
      @people_ids.each do |id|
-       @tmp << @stream.posts.where(:author_id => id).last
+       @tmp << @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%" + @tag  + "%"}])
+
      end
     
     # return a list of the last status for each member of the aspect, the user included
