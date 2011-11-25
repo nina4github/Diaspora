@@ -298,7 +298,7 @@ class ApisController < ApplicationController
   def group
     
     @user_ids = JSON.parse(params[:users]) # array of ids
-    @aspect_name = params[:activity] # string
+    @aspect_name = params[:activity]+' ' # string
     
     # for each user I need to create a new aspect with this name 
     #   if it does not exists already create it
