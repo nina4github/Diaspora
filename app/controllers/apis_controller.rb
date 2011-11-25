@@ -307,6 +307,7 @@ class ApisController < ApplicationController
     #   if they are already included do nothing
     #   else add contacts to aspect 
     
+    @response = Array.new
     @tmp_ids = @user_ids 
     @user_ids.each do |user|
       current_user = User.find(user)
@@ -328,8 +329,10 @@ class ApisController < ApplicationController
             end
           end
         end # end add contacts cycle
+        @response << "new activity group "+ @aspect.name+" for "+current_user.username
       end
     end # end add aspect cycle
+    render :json => {'response'=>@response}
   end
   
   
