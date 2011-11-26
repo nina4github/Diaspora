@@ -313,28 +313,29 @@ class ApisController < ApplicationController
     @response = Array.new
     @tmp_ids = @user_ids 
     @user_ids.each do |user|
-      current_user = User.find(user)
+      tmp_user = User.find(user)
      
-      if current_user.aspects.find_by_name(params[:activity]).nil?
-        @aspect = current_user.aspects.create(:name => params[:activity])  
+      if tmp_user.aspects.find_by_name(params[:activity]).nil?
+        @aspect = tmp_user.aspects.create(:name => params[:activity])  
       else
-        @aspect = current_user.aspects.find_by_name(params[:activity])
+        @aspect = tmp_user.aspects.find_by_name(params[:activity])
       end
       if @aspect.valid?
         # foreach user_ids (different than the current one :))
         @tmp_ids.each do |id|
           if user!=id # I do this with all the ids, except the user I am creating the aspect for
             @person = Person.find(id)
-            if @contact = current_user.contact_for(@person)  
+            @contact = tmp_user.contact_for(@person)
+            if !@contact.nil?  
               if @contact.aspects.find(@aspect.id).nil?
                 @contact.aspects << @aspect
               end
             else
-              @contact = current_user.share_with(@person, @aspect)
+              @contact = tmp_user.share_with(@person, @aspect)
             end
           end
         end # end add contacts cycle
-        @response << "new activity group "+ @aspect.name+" for "+current_user.username
+        @response << "new activity group "+ @aspect.name+" for "+tmp_user.username
       end
     end # end add aspect cycle
     render :json => {'response'=>@response}
