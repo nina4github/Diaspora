@@ -327,7 +327,7 @@ class ApisController < ApplicationController
             @person = Person.find(id)
             @contact = tmp_user.contact_for(@person)
             if !@contact.nil?  
-              if @contact.aspects.find(@aspect.id).nil?
+              if @contact.aspects.where(:id =>@aspect.id).nil?
                 @contact.aspects << @aspect
               end
             else
