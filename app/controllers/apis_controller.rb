@@ -95,10 +95,9 @@ class ApisController < ApplicationController
   def contacts
     @contacts = @user.aspects.find_by_name(params[:aspectname]).contacts
     @response = Array.new
-    i =0 
     @contacts.each do |contact|
-      @response[i] = contact.person.profile
-      i+1
+      @response<<contact.person.profile
+      
     end
       
    render :json =>{
