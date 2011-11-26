@@ -77,7 +77,7 @@ class ApisController < ApplicationController
      @tmp = Array.new
      puts @people_ids
      @people_ids.each do |id|
-       msg = @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%#" + @tag  + "<%"}]).first
+       msg = @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%#" + @tag  + " %"}]).first
        if !msg.nil?
          @tmp << msg
       end
