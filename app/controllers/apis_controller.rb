@@ -77,8 +77,10 @@ class ApisController < ApplicationController
      @tmp = Array.new
      
      @people_ids.each do |id|
-       @tmp << @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%" + @tag  + "%"}]).first
-
+       msg = @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%" + @tag  + "%"}]).first
+       if !msg.nil?
+         @tmp << msg
+      end
      end
     
     # return a list of the last status for each member of the aspect, the user included
