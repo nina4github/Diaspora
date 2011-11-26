@@ -72,10 +72,10 @@ class ApisController < ApplicationController
     @people_ids = Array.new
     @people_ids << @user.id
     @contacts.each do |contact|
-       @people_ids << contact.user_id
+       @people_ids << contact.person_id
      end
      @tmp = Array.new
-     
+     puts @people_ids
      @people_ids.each do |id|
        msg = @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%" + @tag  + "%"}]).first
        if !msg.nil?
