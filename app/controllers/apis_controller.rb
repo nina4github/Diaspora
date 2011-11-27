@@ -89,7 +89,9 @@ class ApisController < ApplicationController
                     msg.tags.each do |tag|
                       @tags << tag.name
                     end
-                    @item['object']={"content" => msg.text,
+                    @item['object']={
+                      "objectType"=>"activity"
+                      "content" => msg.text,
                                       "tags" => @tags}
                     # add item to response
                     @response << @item   
@@ -391,6 +393,13 @@ class ApisController < ApplicationController
   end
   
   
+  
+ def upload
+   File.open('public/images/' + params['myfile'].original_filename, "wb") do |f|
+     f.write(params['myfile'].tempfile.read)
+    end
+   render :json => {'response' => 'everything ok, file uploaded'}
+  end
   
   
    private
