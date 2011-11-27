@@ -71,22 +71,22 @@ class ApisController < ApplicationController
       #         }, 
       @response = Array.new
       @item = Hash.new
-      @tmp.each do |msg|
-        # build item
-        @item['id']=msg.id
-        @item['published']=msg.created_at
-        @item['actor']={"id"=>msg.author_id, 
-                        "displayName" => msg.,
-                        "name" => msg.,
-                        "nichname" =>msg.diaspora_handle,
-                        "preferredUser"}
-        @item['id']=msg.
-        @item['id']=msg.
-        @item['id']=msg.
-
-        # add item to response
-        @response << @item   
-      end         
+      # @tmp.each do |msg|
+      #         # build item
+      #         @item['id']=msg.id
+      #         @item['published']=msg.created_at
+      #         @item['actor']={"id"=>msg.author_id, 
+      #                         "displayName" => msg.,
+      #                         "name" => msg.,
+      #                         "nichname" =>msg.diaspora_handle,
+      #                         "preferredUser"}
+      #         @item['id']=msg.
+      #         @item['id']=msg.
+      #         @item['id']=msg.
+      # 
+      #         # add item to response
+      #         @response << @item   
+      #       end         
              
                              
                                                        
