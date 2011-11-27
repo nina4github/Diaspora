@@ -71,27 +71,35 @@ class ApisController < ApplicationController
       #         }, 
       @response = Array.new
       @item = Hash.new
-      # @tmp.each do |msg|
-      #         # build item
-      #         @item['id']=msg.id
-      #         @item['published']=msg.created_at
-      #         @item['actor']={"id"=>msg.author_id, 
-      #                         "displayName" => msg.,
-      #                         "name" => msg.,
-      #                         "nichname" =>msg.diaspora_handle,
-      #                         "preferredUser"}
-      #         @item['id']=msg.
-      #         @item['id']=msg.
-      #         @item['id']=msg.
-      # 
-      #         # add item to response
-      #         @response << @item   
-      #       end         
+      @tmp.each do |msg|
+                    # build item
+                    @item['id']=msg.id
+                    @item['published']=msg.created_at
+                    @item['actor']={"id"=>msg.author_id, 
+                                    "displayName" => Profile.find(msg.author_id).full_name,
+                                    "name" => Profile.find(msg.author_id).full_name,
+                                    "nichname" => Profile.find(msg.author_id).diaspora_handle,
+                                    "preferredUsername" =>User.find(msg.author_id).username,
+                                    "bithday"=>Profile.find(msg.author_id).birthday,
+                                    "gender"=>Profile.find(msg.author_id).gender,
+                                    "note" => Profile.find(msg.author_id).bio,
+                                    "picture"=>Profile.find(msg.author_id).image_url}
+                    @item['verb']=Post.find(msg.id).type
+                    @tags = Array.new
+                    msg.tags.each do |tag|
+                      @tags << tag.name
+                    end
+                    @item['object']={"content" => msg.text
+                                      "tags" => @tags}
+                    # add item to response
+                    @response << @item   
+                  end         
              
                              
                                                        
     render :json  => {
        :stream => @tmp
+       :activitystream=> @response
     }
     
   end
