@@ -89,7 +89,7 @@ class ApisController < ApplicationController
                     msg.tags.each do |tag|
                       @tags << tag.name
                     end
-                    @item['object']={"content" => msg.text
+                    @item['object']={"content" => msg.text,
                                       "tags" => @tags}
                     # add item to response
                     @response << @item   
