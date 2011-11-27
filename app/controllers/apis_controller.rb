@@ -47,6 +47,47 @@ class ApisController < ApplicationController
         @tmp << msg
       end
     end
+             
+     # transform to activity stream 
+      # "items": [
+      #         {
+      #           "id": "456",
+      #           "published": "2011-02-10T15:04:55Z",
+      #           "actor": {
+      #             "id": "42",
+      #             "displayName": "Jane Doe",
+      #             "name": "Jane Doe",
+      #             "nickname": "jane@pod.example.org",
+      #             "preferredUsername": "jane",
+      #             "birthday": "1975-02-14",
+      #             "gender": "who knows",
+      #             "note": "Janes profile description"
+      #             "picture": "http://example.com/uploads/images/foo.png"
+      #           },
+      #           "verb": "post",
+      #           "object": {
+      #             "content": "Hello, epic Diasporaverse"
+      #           }
+      #         }, 
+      @response = Array.new
+      @item = Hash.new
+      @tmp.each do |msg|
+        # build item
+        @item['id']=msg.id
+        @item['published']=msg.created_at
+        @item['actor']={"id"=>msg.author_id, 
+                        "displayName" => msg.,
+                        "name" => msg.,
+                        "nichname" =>msg.diaspora_handle,
+                        "preferredUser"}
+        @item['id']=msg.
+        @item['id']=msg.
+        @item['id']=msg.
+
+        # add item to response
+        @response << @item   
+      end         
+             
                              
                                                        
     render :json  => {
@@ -110,9 +151,9 @@ class ApisController < ApplicationController
  
  def profiles
    @person_ids = JSON.parse(params[:ids])
-   @profiles = Hash.new
+   @profiles = Array.new
    @person_ids.each do |person_id|
-     @profiles[person_id] = Person.find_by_owner_id(person_id).profile
+     @profiles << Person.find_by_owner_id(person_id).profile
    end
    render :json =>{
     :profiles => @profiles
