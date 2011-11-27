@@ -90,7 +90,7 @@ class ApisController < ApplicationController
                       @tags << tag.name
                     end
                     @item['object']={
-                      "objectType"=>"activity"
+                      "objectType"=>"activity",
                       "content" => msg.text,
                                       "tags" => @tags}
                     # add item to response
