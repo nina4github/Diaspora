@@ -98,7 +98,7 @@ class ApisController < ApplicationController
                              
                                                        
     render :json  => {
-       :stream => @tmp
+       :stream => @tmp,
        :activitystream=> @response
     }
     
