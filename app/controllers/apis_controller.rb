@@ -397,7 +397,8 @@ class ApisController < ApplicationController
  def upload
   # picture = JSON.parse(params['myfile'])
   #   picture.rewind
-  picture = StringIO.new(Base64.decode64(params['myfile']['tempfile']))
+#  picture = StringIO.new(Base64.decode64(params['myfile']['tempfile']))
+  picture = StringIO.new(Base64.decode64(params['myfile'])
    File.open('public/images/' + params['myfile']['original_filename'], "wb") do |f|
      f.write(picture.read)
     end
