@@ -397,8 +397,8 @@ class ApisController < ApplicationController
  def upload
   # picture = JSON.parse(params['myfile'])
   #   picture.rewind
-   File.open('public/images/' + params['myfile'].original_filename, "wb") do |f|
-     f.write(params['myfile'].tempfile.read)
+   File.open('public/images/' + params['myfile']['original_filename'], "wb") do |f|
+     f.write(params['myfile']['tempfile'].read)
     end
    render :json => {'response' => 'everything ok, file uploaded'}
   end
