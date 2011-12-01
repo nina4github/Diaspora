@@ -36,18 +36,33 @@ class ApisController < ApplicationController
   # GET all posts within a specific aspect, the aspect belongs to the current user
   def stream
     aspects = @user.aspects
-    ids = [aspects.find_by_name(params[:aspectname]).id]
-    @stream= AspectStream.new(@user, ids,
-                               :order => "created_at",
-                               :max_time => Time.now.to_i)
-    @tmp = Array.new
-
-    @stream.posts.each do |msg|
-      if msg.text.include? '#'+params[:aspectname].to_s+'<' #this is really hugly but it is a way to check for tags that we know will be a hash tag
-        @tmp << msg
-      end
+    @activity = params[:aspectname]
+    
+    ids = [aspects.find_by_name(@activity).id]
+    
+    # I had to recreate the stream object, because it was almost impossible to understand what exactly RUBY is doing behind the scenes
+    # Here the stream includes ALL the StatusMessages that a user
+   
+    posts = Post.joins(:post_visibilities,:aspect_visibilities, :aspects, :contacts,'INNER JOIN taggings ON taggings.taggable_id = posts.id','INNER JOIN tags ON taggings.tag_id = tags.id').where(:aspects=>{:name=>@activity},:tags=>{:name=>@activity}).where('posts.author_id = '+@user.id.to_s+' OR contacts.user_id ='+@user.id.to_s).order('posts.created_at DESC').select('DISTINCT posts.*,tags.name as tags_name, aspects.id as aspects_id, aspects.name as aspects_name')
+    # I need to do a trick for extracting the photos considering that they do not have a tag, but are linked to a status message that has one... no comment on the DIASPORA decisions of implementation please
+    @statusmessage_guids = Array.new
+    # take all the posts that I just collected and take their GUID (really I have no clue what this is!!)
+    posts.each do |p|
+    	@statusmessage_guids<<p.guid
     end
-             
+    # select all the posts of type photo that match the field Status_message_guid with the array we just extracted
+    Post.where(:type=>'Photo',:status_message_guid=>@statusmessage_guids).select('posts.*')
+
+    @stream = Array.new
+    posts.each do |p|
+      @stream << p
+    end
+    photo.each do |p|
+      @stream << p 
+    end
+    @stream = @stream.sort{|a,b| a.id <=> b.id }
+  
+  
      # transform to activity stream 
       # "items": [
       #         {
@@ -71,7 +86,7 @@ class ApisController < ApplicationController
       #         }, 
       @response = Array.new
       @item = Hash.new
-      @tmp.each do |msg|
+      @stream.each do |msg|
                     # build item
                     @item['id']=msg.id
                     @item['published']=msg.created_at
@@ -100,7 +115,7 @@ class ApisController < ApplicationController
                              
                                                        
     render :json  => {
-       :stream => @tmp,
+       :stream => @stream,
        :activitystream=> @response
     }
     
@@ -127,8 +142,20 @@ class ApisController < ApplicationController
      end
      @tmp = Array.new
      puts @people_ids
+     # for each of the people in my group (included me)
      @people_ids.each do |id|
-       msg = @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%#" + @tag  + " %"}]).first
+        
+        #take the message of which id is author
+        
+#       msg = @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%#" + @tag  + " %"}]).first
+        msgs = @stream.posts.where(:author_id => id)
+        
+        # be sure that the message is on the right topic = @tag
+        tmp_m = Array.new
+        msgs.each do |m|
+          tmp_m << m.tags.where(:name=>@tag)
+        end
+        msg = tmp_m.last
        if !msg.nil?
          @tmp << msg
       end
