@@ -100,14 +100,18 @@ class ApisController < ApplicationController
                                     "note" => Profile.find(msg.author_id).bio,
                                     "picture"=>Profile.find(msg.author_id).image_url}
                     @item['verb']=Post.find(msg.id).type
-                    @tags = Array.new
-                    msg.tags.each do |tag|
-                      @tags << tag.name
+                    if (@item['verb']=='Photo')
+                      @tags = Array.new
+                    else
+                      @tags = Array.new
+                      msg.tags.each do |tag|
+                        @tags << tag.name
+                      end
                     end
                     @item['object']={
                       "objectType"=>"activity",
                       "content" => msg.text,
-                                      "tags" => @tags}
+                      "tags" => @tags}
                     # add item to response
                     @response << @item   
                   end         
