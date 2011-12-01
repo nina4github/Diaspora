@@ -85,8 +85,9 @@ class ApisController < ApplicationController
       #           }
       #         }, 
       @response = Array.new
-      @item = Hash.new
+      
       @stream.each do |msg|
+          @item = Hash.new
                     # build item
                     @item['id']=msg.id
                     @item['published']=msg.created_at
@@ -112,9 +113,9 @@ class ApisController < ApplicationController
                       "objectType"=>"activity",
                       "content" => msg.text,
                       "tags" => @tags}
-                    # add item to response
+                    
                     @response << @item   
-                  end         
+    end         
              
                              
                                                        
