@@ -51,13 +51,13 @@ class ApisController < ApplicationController
     	@statusmessage_guids<<p.guid
     end
     # select all the posts of type photo that match the field Status_message_guid with the array we just extracted
-    Post.where(:type=>'Photo',:status_message_guid=>@statusmessage_guids).select('posts.*')
+    photos = Post.where(:type=>'Photo',:status_message_guid=>@statusmessage_guids).select('posts.*')
 
     @stream = Array.new
     posts.each do |p|
       @stream << p
     end
-    photo.each do |p|
+    photos.each do |p|
       @stream << p 
     end
     @stream = @stream.sort{|a,b| a.id <=> b.id }
