@@ -82,6 +82,27 @@ class ApisController < ApplicationController
   end
   
   
+  def week
+    #like stream but grouped by day :) che palle
+    aspects = @user.aspects
+    @activity = params[:aspectname]
+    
+    @stream = retrieve_stream(@activity,@user.id)
+    @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by(&:group_by_criteria)
+    @response = Hash.new
+    @stream.each do |key, value|
+        value=convert_to_activity_stream(value)
+        @response[key.to_date.wday]=value
+    end
+    
+      render :json  =>{
+         :stream => @response}
+    
+  end
+  
+  def group_by_criteria
+    created_at.to_date.to_s(:db)
+  end
   
  
   # GET contacts for an aspect
@@ -93,7 +114,6 @@ class ApisController < ApplicationController
     @contacts.each do |contact|
       profile= contact.person.profile
       @response['actor']<<{"id"=>profile.id, 
-                      "displayName" => profile.full_name,
                       "name" => profile.full_name,
                       "nichname" => profile.diaspora_handle,
                       "preferredUsername" =>User.find(profile.id).username,
@@ -430,15 +450,20 @@ class ApisController < ApplicationController
                    # build item
                                                         @item['id']=msg.id
                                                         @item['published']=msg.created_at
+                                                        @profiletags = Array.new
+                                                        profile.tags.each do |tag|
+                                                          @progiletags << tag.name
+                                                        end
                                                         @item['actor']={"id"=>msg.author_id, 
-                                                                        "displayName" => Profile.find(msg.author_id).full_name,
                                                                         "name" => Profile.find(msg.author_id).full_name,
                                                                         "nichname" => Profile.find(msg.author_id).diaspora_handle,
                                                                         "preferredUsername" =>User.find(msg.author_id).username,
                                                                         "bithday"=>Profile.find(msg.author_id).birthday,
                                                                         "gender"=>Profile.find(msg.author_id).gender,
                                                                         "note" => Profile.find(msg.author_id).bio,
-                                                                        "picture"=>Profile.find(msg.author_id).image_url}
+                                                                        "picture"=>Profile.find(msg.author_id).image_url
+                                                                        "tags"=>@profiletags}
+                                                                        
                                                         @item['verb']=Post.find(msg.id).type
                                                         if (@item['verb']=='Photo')
                                                           @tags = Array.new
