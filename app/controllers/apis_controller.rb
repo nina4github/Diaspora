@@ -41,61 +41,7 @@ class ApisController < ApplicationController
     #ids = [aspects.find_by_name(@activity).id]
     
     @stream = retrieve_stream(@activity,@user.id)
-    
-    
-     # transform to activity stream 
-      # "items": [
-      #         {
-      #           "id": "456",
-      #           "published": "2011-02-10T15:04:55Z",
-      #           "actor": {
-      #             "id": "42",
-      #             "displayName": "Jane Doe",
-      #             "name": "Jane Doe",
-      #             "nickname": "jane@pod.example.org",
-      #             "preferredUsername": "jane",
-      #             "birthday": "1975-02-14",
-      #             "gender": "who knows",
-      #             "note": "Janes profile description"
-      #             "picture": "http://example.com/uploads/images/foo.png"
-      #           },
-      #           "verb": "post",
-      #           "object": {
-      #             "content": "Hello, epic Diasporaverse"
-      #           }
-      #         }, 
-      @response = Array.new
-      
-      @stream.each do |msg|
-          @item = Hash.new
-                    # build item
-                    @item['id']=msg.id
-                    @item['published']=msg.created_at
-                    @item['actor']={"id"=>msg.author_id, 
-                                    "displayName" => Profile.find(msg.author_id).full_name,
-                                    "name" => Profile.find(msg.author_id).full_name,
-                                    "nichname" => Profile.find(msg.author_id).diaspora_handle,
-                                    "preferredUsername" =>User.find(msg.author_id).username,
-                                    "bithday"=>Profile.find(msg.author_id).birthday,
-                                    "gender"=>Profile.find(msg.author_id).gender,
-                                    "note" => Profile.find(msg.author_id).bio,
-                                    "picture"=>Profile.find(msg.author_id).image_url}
-                    @item['verb']=Post.find(msg.id).type
-                    if (@item['verb']=='Photo')
-                      @tags = Array.new
-                    else
-                      @tags = Array.new
-                      msg.tags.each do |tag|
-                        @tags << tag.name
-                      end
-                    end
-                    @item['object']={
-                      "objectType"=>"activity",
-                      "content" => msg.text,
-                      "tags" => @tags}
-                    
-                    @response << @item   
-    end         
+      @stream = convert_to_activity_stream(@stream)
                                                       
     render :json  => {
        :stream => @stream,
@@ -114,32 +60,25 @@ class ApisController < ApplicationController
   
   
    @stream = retrieve_stream(@activity,@user.id)
-   puts @stream
+   @stream = convert_to_activity_stream(@stream)
   
-  # retrieve the last status for each distinct contact
-    
-    @contacts = @user.aspects.find_by_name(params[:aspectname]).contacts
-    @people_ids = Array.new
-    @people_ids << @user.id
-    @contacts.each do |contact|
-       @people_ids << contact.person_id
-    end
-  
-    @tmp = Array.new
+    @msgs = Array.new
      # for each of the people in my group (included me)
-    @people_ids.each do |id|
-        #take the message of which id is author
-    msgs = @stream.find(:all,:conditions=>{:author_id => id})
-    msgs = msgs.sort{|a,b| a.updated_at <=> b.updated_at} # be sure that the results are ordered by the update date
-    msg = msgs.first
-    if !msg.nil?
-        @tmp << msg
-      end
-    end
+    # @people_ids.each do |id|
+      
+      #take the message of which id is author
+      @stream.each do |p|
+        if msgs[p.author_id].nil?
+          msgs[p.author_id] = Array.new
+        end
+          msgs[p.author_id] <<p
+      end 
+      
+    #end
     
     # return a list of the last status for each member of the aspect, the user included
       render :json  =>{
-         :stream => @tmp}
+         :stream => @msgs}
     
   end
   
@@ -450,6 +389,63 @@ class ApisController < ApplicationController
      end
      stream = stream.sort{|a,b| b.created_at <=> a.created_at }
      return stream 
+   end
+   
+   
+   def convert_to_activity_stream(stream)
+     # transform to activity stream 
+       # "items": [
+       #         {
+       #           "id": "456",
+       #           "published": "2011-02-10T15:04:55Z",
+       #           "actor": {
+       #             "id": "42",
+       #             "displayName": "Jane Doe",
+       #             "name": "Jane Doe",
+       #             "nickname": "jane@pod.example.org",
+       #             "preferredUsername": "jane",
+       #             "birthday": "1975-02-14",
+       #             "gender": "who knows",
+       #             "note": "Janes profile description"
+       #             "picture": "http://example.com/uploads/images/foo.png"
+       #           },
+       #           "verb": "post",
+       #           "object": {
+       #             "content": "Hello, epic Diasporaverse"
+       #           }
+       #         }, 
+     @response = Array.new
+     stream.each do |msg|
+         @item = Hash.new
+                   # build item
+                   @item['id']=msg.id
+                   @item['published']=msg.created_at
+                   @item['actor']={"id"=>msg.author_id, 
+                                   "displayName" => Profile.find(msg.author_id).full_name,
+                                   "name" => Profile.find(msg.author_id).full_name,
+                                   "nichname" => Profile.find(msg.author_id).diaspora_handle,
+                                   "preferredUsername" =>User.find(msg.author_id).username,
+                                   "bithday"=>Profile.find(msg.author_id).birthday,
+                                   "gender"=>Profile.find(msg.author_id).gender,
+                                   "note" => Profile.find(msg.author_id).bio,
+                                   "picture"=>Profile.find(msg.author_id).image_url}
+                   @item['verb']=Post.find(msg.id).type
+                   if (@item['verb']=='Photo')
+                     @tags = Array.new
+                   else
+                     @tags = Array.new
+                     msg.tags.each do |tag|
+                       @tags << tag.name
+                     end
+                   end
+                   @item['object']={
+                     "objectType"=>"activity",
+                     "content" => msg.text,
+                     "tags" => @tags}
+                   
+                   @response << @item   
+          end
+          return @response
    end
    
 end
