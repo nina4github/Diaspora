@@ -84,7 +84,7 @@ class ApisController < ApplicationController
     
     # return a list of the last status for each member of the aspect, the user included
       render :json  =>{
-         :stream => msgs[0]}
+         :stream => msgs[12]}
     
   end
   
