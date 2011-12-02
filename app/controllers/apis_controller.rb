@@ -113,6 +113,10 @@ class ApisController < ApplicationController
     @response['actor']=[]
     @contacts.each do |contact|
       profile= contact.person.profile
+       @profiletags = Array.new
+        profile.tags.each do |tag|
+          @progiletags << tag.name
+        end
       @response['actor']<<{"id"=>profile.id, 
                       "name" => profile.full_name,
                       "nichname" => profile.diaspora_handle,
@@ -120,7 +124,8 @@ class ApisController < ApplicationController
                       "bithday"=>profile.birthday,
                       "gender"=>profile.gender,
                       "note" => profile.bio,
-                      "picture"=>profile.image_url}
+                      "picture"=>profile.image_url,
+                      "tags"=>@profiletags}
       
     end
       
@@ -451,17 +456,17 @@ class ApisController < ApplicationController
                                                         @item['id']=msg.id
                                                         @item['published']=msg.created_at
                                                         @profiletags = Array.new
-                                                        profile.tags.each do |tag|
+                                                        Profile.find(msg.author_id).tags.each do |tag|
                                                           @progiletags << tag.name
                                                         end
                                                         @item['actor']={"id"=>msg.author_id, 
                                                                         "name" => Profile.find(msg.author_id).full_name,
                                                                         "nichname" => Profile.find(msg.author_id).diaspora_handle,
                                                                         "preferredUsername" =>User.find(msg.author_id).username,
-                                                                        "bithday"=>Profile.find(msg.author_id).birthday,
+                                                                        "bithday"=>.birthday,
                                                                         "gender"=>Profile.find(msg.author_id).gender,
                                                                         "note" => Profile.find(msg.author_id).bio,
-                                                                        "picture"=>Profile.find(msg.author_id).image_url
+                                                                        "picture"=>Profile.find(msg.author_id).image_url,
                                                                         "tags"=>@profiletags}
                                                                         
                                                         @item['verb']=Post.find(msg.id).type
