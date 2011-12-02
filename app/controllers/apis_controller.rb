@@ -463,7 +463,7 @@ class ApisController < ApplicationController
                                                                         "name" => Profile.find(msg.author_id).full_name,
                                                                         "nichname" => Profile.find(msg.author_id).diaspora_handle,
                                                                         "preferredUsername" =>User.find(msg.author_id).username,
-                                                                        "bithday"=>.birthday,
+                                                                        "bithday"=>Profile.find(msg.author_id).birthday,
                                                                         "gender"=>Profile.find(msg.author_id).gender,
                                                                         "note" => Profile.find(msg.author_id).bio,
                                                                         "picture"=>Profile.find(msg.author_id).image_url,
