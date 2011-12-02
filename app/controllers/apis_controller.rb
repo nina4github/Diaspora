@@ -72,8 +72,11 @@ class ApisController < ApplicationController
           msgs[p.author_id] = Array.new
         end
           msgs[p.author_id] <<p
-          msgs[p.author_id] = convert_to_activity_stream(msgs[p.author_id])
+         
       end 
+       msgs.each do |msg_author|
+         msg_author = convert_to_activity_stream(msg_author)
+       end
       
     #end
     
