@@ -44,8 +44,8 @@ class ApisController < ApplicationController
     @stream = convert_to_activity_stream(@stream)
                                                       
     render :json  => {
-      # :stream => @stream,
-       :activitystream=> @stream
+       :stream => @stream,
+      # :activitystream=> @stream
     }
     
   end
@@ -425,31 +425,31 @@ class ApisController < ApplicationController
      stream.each do |msg|
          @item = Hash.new
          
-                   # # build item
-                   #                    @item['id']=msg.id
-                   #                    @item['published']=msg.created_at
-                   #                    @item['actor']={"id"=>msg.author_id, 
-                   #                                    "displayName" => Profile.find(msg.author_id).full_name,
-                   #                                    "name" => Profile.find(msg.author_id).full_name,
-                   #                                    "nichname" => Profile.find(msg.author_id).diaspora_handle,
-                   #                                    "preferredUsername" =>User.find(msg.author_id).username,
-                   #                                    "bithday"=>Profile.find(msg.author_id).birthday,
-                   #                                    "gender"=>Profile.find(msg.author_id).gender,
-                   #                                    "note" => Profile.find(msg.author_id).bio,
-                   #                                    "picture"=>Profile.find(msg.author_id).image_url}
-                   #                    @item['verb']=Post.find(msg.id).type
-                   #                    if (@item['verb']=='Photo')
-                   #                      @tags = Array.new
-                   #                    else
-                   #                      @tags = Array.new
-                   #                      msg.tags.each do |tag|
-                   #                        @tags << tag.name
-                   #                      end
-                   #                    end
-                   #                    @item['object']={
-                   #                      "objectType"=>"activity",
-                   #                      "content" => msg.text,
-                   #                      "tags" => @tags}
+                   # build item
+                                                        @item['id']=msg.id
+                                                        @item['published']=msg.created_at
+                                                        @item['actor']={"id"=>msg.author_id, 
+                                                                        "displayName" => Profile.find(msg.author_id).full_name,
+                                                                        "name" => Profile.find(msg.author_id).full_name,
+                                                                        "nichname" => Profile.find(msg.author_id).diaspora_handle,
+                                                                        "preferredUsername" =>User.find(msg.author_id).username,
+                                                                        "bithday"=>Profile.find(msg.author_id).birthday,
+                                                                        "gender"=>Profile.find(msg.author_id).gender,
+                                                                        "note" => Profile.find(msg.author_id).bio,
+                                                                        "picture"=>Profile.find(msg.author_id).image_url}
+                                                        @item['verb']=Post.find(msg.id).type
+                                                        if (@item['verb']=='Photo')
+                                                          @tags = Array.new
+                                                        else
+                                                          @tags = Array.new
+                                                          msg.tags.each do |tag|
+                                                            @tags << tag.name
+                                                          end
+                                                        end
+                                                        @item['object']={
+                                                          "objectType"=>"activity",
+                                                          "content" => msg.text,
+                                                          "tags" => @tags}
                    
             @response << @item   
           end
