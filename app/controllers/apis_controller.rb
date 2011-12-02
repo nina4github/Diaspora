@@ -59,7 +59,7 @@ class ApisController < ApplicationController
   
    @stream = retrieve_stream(@activity,@user.id)
     msgs = Hash.new
-    @response = Array.new
+    @response = Hash.new
       
       #take the message of which id is author
     @stream.each do |p|
@@ -71,8 +71,7 @@ class ApisController < ApplicationController
     end 
        #h.each {|key, value| puts "#{key} is #{value}" }
        msgs.each do |key,value| 
-         @response <<convert_to_activity_stream(value) #  value #
-        
+         @response[key] << convert_to_activity_stream(value) #  value # 
        end
       
       
