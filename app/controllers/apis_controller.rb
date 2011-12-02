@@ -40,7 +40,7 @@ class ApisController < ApplicationController
     
     #ids = [aspects.find_by_name(@activity).id]
     
-    @stream = retrieveStream(@activity,@user.id)
+    @stream = retrieve_stream(@activity,@user.id)
     
     
      # transform to activity stream 
@@ -113,7 +113,7 @@ class ApisController < ApplicationController
    @max_time =Time.now.to_i
   
   
-   @stream = retrieveStream(@activity,@user.id)
+   @stream = retrieve_stream(@activity,@user.id)
   
   # retrieve the last status for each distinct contact
     
