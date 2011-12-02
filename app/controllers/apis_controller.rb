@@ -114,6 +114,7 @@ class ApisController < ApplicationController
   
   
    @stream = retrieve_stream(@activity,@user.id)
+   puts @stream
   
   # retrieve the last status for each distinct contact
     
