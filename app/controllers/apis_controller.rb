@@ -75,7 +75,8 @@ class ApisController < ApplicationController
          
       end 
        msgs.each do |msg_author|
-         msg_author = convert_to_activity_stream(msg_author)
+         puts msg_author
+#         msg_author = convert_to_activity_stream(msg_author)
        end
       
     #end
