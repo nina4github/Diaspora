@@ -63,11 +63,12 @@ class ApisController < ApplicationController
       
       #take the message of which id is author
     @stream.each do |p|
-      p=convert_to_activity_stream([p])
-      if msgs[p[0].actor.id].nil?
-          msgs[p.author_id] = [p]
+      tmp=convert_to_activity_stream([p])      
+      if msgs[p.author_id].nil?
+
+          msgs[p.author_id] = [tmp]
       else
-          msgs[p.author_id] <<p
+          msgs[p.author_id] <<tmp
       end      
     end 
              @response=msgs
