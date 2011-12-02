@@ -62,7 +62,7 @@ class ApisController < ApplicationController
    @stream = retrieve_stream(@activity,@user.id)
    @stream = convert_to_activity_stream(@stream)
   
-    @msgs = Array.new
+    msgs = Array.new
      # for each of the people in my group (included me)
     # @people_ids.each do |id|
       
