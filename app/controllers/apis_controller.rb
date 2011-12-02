@@ -56,16 +56,10 @@ class ApisController < ApplicationController
    aspects = @user.aspects
    ids = [aspects.find_by_name(params[:aspectname]).id]
    @activity = params[:aspectname]
-   @max_time =Time.now.to_i
-  
   
    @stream = retrieve_stream(@activity,@user.id)
-   
-  
     msgs = Hash.new
-    @response = Hash.new
-     # for each of the people in my group (included me)
-    # @people_ids.each do |id|
+    @response = Array.new
       
       #take the message of which id is author
       @stream.each do |p|
@@ -75,9 +69,9 @@ class ApisController < ApplicationController
           msgs[p.author_id] <<p
          end
       end 
-       msgs.each do |msg_author|
-         @response = convert_to_activity_stream(msg_author)
-         #msg_author = convert_to_activity_stream(msg_author)
+       msgs.each do |ms|
+         @response << ms.class
+         #ms = convert_to_activity_stream(ms)
        end
       
       
@@ -85,7 +79,7 @@ class ApisController < ApplicationController
     
     # return a list of the last status for each member of the aspect, the user included
       render :json  =>{
-         :stream => msgs}
+         :stream => @response}
     
   end
   
