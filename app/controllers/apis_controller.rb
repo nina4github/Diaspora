@@ -72,7 +72,7 @@ class ApisController < ApplicationController
        #h.each {|key, value| puts "#{key} is #{value}" }
        msgs.each do |key,value| 
          if @response[key].nil?
-            @response[key] = convert_to_activity_stream(value) #  value # 
+            @response[key] = [convert_to_activity_stream(value) ]#  value # 
           else
             @response[key] << convert_to_activity_stream(value) #  value # 
           end
