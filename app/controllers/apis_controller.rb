@@ -448,6 +448,7 @@ class ApisController < ApplicationController
        stream << p 
      end
      stream = stream.sort{|a,b| a.id <=> b.id }
+     return stream 
    end
-   return stream 
+   
 end
