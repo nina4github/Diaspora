@@ -69,7 +69,7 @@ class ApisController < ApplicationController
           msgs[p.author_id] <<p
       end      
     end 
-       h.each {|key, value| puts "#{key} is #{value}" }
+       #h.each {|key, value| puts "#{key} is #{value}" }
        msgs.each do |key,value| 
          @response << value #convert_to_activity_stream(value)
         
