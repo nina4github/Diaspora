@@ -63,21 +63,15 @@ class ApisController < ApplicationController
       
       #take the message of which id is author
     @stream.each do |p|
+      p=convert_to_activity_stream([p])
       if msgs[p.author_id].nil?
           msgs[p.author_id] = [p]
       else
           msgs[p.author_id] <<p
       end      
     end 
-       #h.each {|key, value| puts "#{key} is #{value}" }
-       msgs.each do |key,value| 
-         # if @response[key].nil?
-         #             @response[key] = [convert_to_activity_stream(value)] #  value # 
-         #           else
-         #             @response[key] << convert_to_activity_stream(value) #  value # 
-         #           end
-         @response[key]=value.class
-       end
+             @response=msgs
+       #h.each {|key, value| puts "#{key} is #{value}" 
       
       
     #end
