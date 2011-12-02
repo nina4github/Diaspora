@@ -76,14 +76,15 @@ class ApisController < ApplicationController
       end 
        msgs.each do |msg_author|
          
-         msg_author = convert_to_activity_stream(msg_author)
+         #msg_author = convert_to_activity_stream(msg_author)
        end
+      
       
     #end
     
     # return a list of the last status for each member of the aspect, the user included
       render :json  =>{
-         :stream => msgs}
+         :stream => msgs[0]}
     
   end
   
@@ -422,7 +423,7 @@ class ApisController < ApplicationController
      @response = Array.new
      stream.each do |msg|
          @item = Hash.new
-         @item = msg
+         
                    # # build item
                    #                    @item['id']=msg.id
                    #                    @item['published']=msg.created_at
