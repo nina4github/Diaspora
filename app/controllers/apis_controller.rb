@@ -115,7 +115,7 @@ class ApisController < ApplicationController
       profile= contact.person.profile
        @profiletags = Array.new
         profile.tags.each do |tag|
-          @progiletags << tag.name
+          @profiletags << tag.name
         end
       @response['actor']<<{"id"=>profile.id, 
                       "name" => profile.full_name,
@@ -457,7 +457,7 @@ class ApisController < ApplicationController
                                                         @item['published']=msg.created_at
                                                         @profiletags = Array.new
                                                         Profile.find(msg.author_id).tags.each do |tag|
-                                                          @progiletags << tag.name
+                                                          @profiletags << tag.name
                                                         end
                                                         @item['actor']={"id"=>msg.author_id, 
                                                                         "name" => Profile.find(msg.author_id).full_name,
