@@ -128,7 +128,7 @@ class ApisController < ApplicationController
      # for each of the people in my group (included me)
     @people_ids.each do |id|
         #take the message of which id is author
-    msgs = @stream.posts.where(:author_id => id)
+    msgs = @stream.where(:author_id => id)
     msgs = msgs.sort{|a,b| a.updated_at <=> b.updated_at} # be sure that the results are ordered by the update date
     msg = msgs.first
     if !msg.nil?
