@@ -29,9 +29,7 @@ class ApisController < ApplicationController
     }
   end
   
-  
-  
- 
+
   
   # GET all posts within a specific aspect, the aspect belongs to the current user
   def stream
@@ -90,9 +88,19 @@ class ApisController < ApplicationController
   # (review 17Nov2011)
   def contacts
     @contacts = @user.aspects.find_by_name(params[:aspectname]).contacts
-    @response = Array.new
+    @response = Hash.new
+    @response['actor']=[]
     @contacts.each do |contact|
-      @response<<contact.person.profile
+      profile= contact.person.profile
+      @response['actor']={"id"=>profile.id, 
+                      "displayName" => profile.full_name,
+                      "name" => profile.full_name,
+                      "nichname" => profile.diaspora_handle,
+                      "preferredUsername" =>User.find(profile.id).username,
+                      "bithday"=>profile.birthday,
+                      "gender"=>profile.gender,
+                      "note" => profile.bio,
+                      "picture"=>profile.image_url}
       
     end
       
