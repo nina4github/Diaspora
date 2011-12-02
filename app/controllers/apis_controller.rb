@@ -75,7 +75,7 @@ class ApisController < ApplicationController
          end
       end 
        msgs.each do |msg_author|
-         puts msg_author
+         
          msg_author = convert_to_activity_stream(msg_author)
        end
       
@@ -422,33 +422,34 @@ class ApisController < ApplicationController
      @response = Array.new
      stream.each do |msg|
          @item = Hash.new
-                   # build item
-                   @item['id']=msg.id
-                   @item['published']=msg.created_at
-                   @item['actor']={"id"=>msg.author_id, 
-                                   "displayName" => Profile.find(msg.author_id).full_name,
-                                   "name" => Profile.find(msg.author_id).full_name,
-                                   "nichname" => Profile.find(msg.author_id).diaspora_handle,
-                                   "preferredUsername" =>User.find(msg.author_id).username,
-                                   "bithday"=>Profile.find(msg.author_id).birthday,
-                                   "gender"=>Profile.find(msg.author_id).gender,
-                                   "note" => Profile.find(msg.author_id).bio,
-                                   "picture"=>Profile.find(msg.author_id).image_url}
-                   @item['verb']=Post.find(msg.id).type
-                   if (@item['verb']=='Photo')
-                     @tags = Array.new
-                   else
-                     @tags = Array.new
-                     msg.tags.each do |tag|
-                       @tags << tag.name
-                     end
-                   end
-                   @item['object']={
-                     "objectType"=>"activity",
-                     "content" => msg.text,
-                     "tags" => @tags}
+         @item = msg
+                   # # build item
+                   #                    @item['id']=msg.id
+                   #                    @item['published']=msg.created_at
+                   #                    @item['actor']={"id"=>msg.author_id, 
+                   #                                    "displayName" => Profile.find(msg.author_id).full_name,
+                   #                                    "name" => Profile.find(msg.author_id).full_name,
+                   #                                    "nichname" => Profile.find(msg.author_id).diaspora_handle,
+                   #                                    "preferredUsername" =>User.find(msg.author_id).username,
+                   #                                    "bithday"=>Profile.find(msg.author_id).birthday,
+                   #                                    "gender"=>Profile.find(msg.author_id).gender,
+                   #                                    "note" => Profile.find(msg.author_id).bio,
+                   #                                    "picture"=>Profile.find(msg.author_id).image_url}
+                   #                    @item['verb']=Post.find(msg.id).type
+                   #                    if (@item['verb']=='Photo')
+                   #                      @tags = Array.new
+                   #                    else
+                   #                      @tags = Array.new
+                   #                      msg.tags.each do |tag|
+                   #                        @tags << tag.name
+                   #                      end
+                   #                    end
+                   #                    @item['object']={
+                   #                      "objectType"=>"activity",
+                   #                      "content" => msg.text,
+                   #                      "tags" => @tags}
                    
-                   @response << @item   
+            @response << @item   
           end
           return @response
    end
