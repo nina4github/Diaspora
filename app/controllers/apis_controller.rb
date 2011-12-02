@@ -38,31 +38,11 @@ class ApisController < ApplicationController
     aspects = @user.aspects
     @activity = params[:aspectname]
     
-    ids = [aspects.find_by_name(@activity).id]
+    #ids = [aspects.find_by_name(@activity).id]
     
-    # I had to recreate the stream object, because it was almost impossible to understand what exactly RUBY is doing behind the scenes
-    # Here the stream includes ALL the StatusMessages that a user
-   
-    posts = Post.joins(:post_visibilities,:aspect_visibilities, :aspects, :contacts,'INNER JOIN taggings ON taggings.taggable_id = posts.id','INNER JOIN tags ON taggings.tag_id = tags.id').where(:aspects=>{:name=>@activity},:tags=>{:name=>@activity}).where('posts.author_id = '+@user.id.to_s+' OR contacts.user_id ='+@user.id.to_s).order('posts.created_at DESC').select('DISTINCT posts.*,tags.name as tags_name, aspects.id as aspects_id, aspects.name as aspects_name')
-    # I need to do a trick for extracting the photos considering that they do not have a tag, but are linked to a status message that has one... no comment on the DIASPORA decisions of implementation please
-    @statusmessage_guids = Array.new
-    # take all the posts that I just collected and take their GUID (really I have no clue what this is!!)
-    posts.each do |p|
-    	@statusmessage_guids<<p.guid
-    end
-    # select all the posts of type photo that match the field Status_message_guid with the array we just extracted
-    photos = Post.where(:type=>'Photo',:status_message_guid=>@statusmessage_guids).select('posts.*')
-
-    @stream = Array.new
-    posts.each do |p|
-      @stream << p
-    end
-    photos.each do |p|
-      @stream << p 
-    end
-    @stream = @stream.sort{|a,b| a.id <=> b.id }
-  
-  
+    @stream = retrieveStream(@activity,@user.id)
+    
+    
      # transform to activity stream 
       # "items": [
       #         {
@@ -116,9 +96,7 @@ class ApisController < ApplicationController
                     
                     @response << @item   
     end         
-             
-                             
-                                                       
+                                                      
     render :json  => {
        :stream => @stream,
        :activitystream=> @response
@@ -131,12 +109,12 @@ class ApisController < ApplicationController
   def last
    aspects = @user.aspects
    ids = [aspects.find_by_name(params[:aspectname]).id]
-   @tag = params[:aspectname]
+   @activity = params[:aspectname]
    @max_time =Time.now.to_i
-   @stream= AspectStream.new(@user, ids,
-                              :order => "created_at",
-                              :max_time => Time.now.to_i)
-   
+  
+  
+   @stream = retrieveStream(@activity,@user.id)
+  
   # retrieve the last status for each distinct contact
     
     @contacts = @user.aspects.find_by_name(params[:aspectname]).contacts
@@ -144,27 +122,19 @@ class ApisController < ApplicationController
     @people_ids << @user.id
     @contacts.each do |contact|
        @people_ids << contact.person_id
-     end
-     @tmp = Array.new
-     puts @people_ids
+    end
+  
+    @tmp = Array.new
      # for each of the people in my group (included me)
-     @people_ids.each do |id|
-        
+    @people_ids.each do |id|
         #take the message of which id is author
-        
-#       msg = @stream.posts.where(:author_id => id).find(:all,:conditions => ["text like :eq", {:eq => "%#" + @tag  + " %"}]).first
-        msgs = @stream.posts.where(:author_id => id)
-        
-        # be sure that the message is on the right topic = @tag
-        tmp_m = Array.new
-        msgs.each do |m|
-          tmp_m << m.tags.where(:name=>@tag)
-        end
-        msg = tmp_m.last
-       if !msg.nil?
-         @tmp << msg
+    msgs = @stream.posts.where(:author_id => id)
+    msgs = msgs.sort{|a,b| a.updated_at <=> b.updated_at} # be sure that the results are ordered by the update date
+    msg = msgs.first
+    if !msg.nil?
+        @tmp << msg
       end
-     end
+    end
     
     # return a list of the last status for each member of the aspect, the user included
       render :json  =>{
@@ -443,4 +413,41 @@ class ApisController < ApplicationController
    def set_user_from_oauth
      @user = request.env['oauth2'].resource_owner
    end
+   
+   
+   # 
+   # retrieve the visible posts for a user in a specific aspect and filtered by a specific tag
+   # the tag filter is used to guarantee the topic of the message match the topic of the aspect
+   # the stream has to be filled with photos because they do not have a tag when they are created but they are associated to a statusmessage through the GUID and STATUS_MESSAGE_GUID fields in Post
+   # 
+   # aspect_name = string with the name of the activity on focus (for aspect and tag filtering)
+   # user_id = id of the user from which to control the visibility of the posts
+   # return stream
+   #
+   # todo => review how photos are created
+   def retrieve_stream(aspect_name,user_id)
+     
+     # I had to recreate the stream object, because it was almost impossible to understand what exactly RUBY is doing behind the scenes
+     # Here the stream includes ALL the StatusMessages that a user
+     
+     posts = Post.joins(:post_visibilities,:aspect_visibilities, :aspects, :contacts,'INNER JOIN taggings ON taggings.taggable_id = posts.id','INNER JOIN tags ON taggings.tag_id = tags.id').where(:aspects=>{:name=>aspect_name},:tags=>{:name=>aspect_name}).where('posts.author_id = '+user_id.to_s+' OR contacts.user_id ='+user_id.to_s).order('posts.created_at DESC').select('DISTINCT posts.*,tags.name as tags_name, aspects.id as aspects_id, aspects.name as aspects_name')
+     # I need to do a trick for extracting the photos considering that they do not have a tag, but are linked to a status message that has one... no comment on the DIASPORA decisions of implementation please
+     statusmessage_guids = Array.new
+     # take all the posts that I just collected and take their GUID (really I have no clue what this is!!)
+     posts.each do |p|
+     	statusmessage_guids<<p.guid
+     end
+     # select all the posts of type photo that match the field Status_message_guid with the array we just extracted
+     photos = Post.where(:type=>'Photo',:status_message_guid=>statusmessage_guids).select('posts.*')
+
+     stream = Array.new
+     posts.each do |p|
+       stream << p
+     end
+     photos.each do |p|
+       stream << p 
+     end
+     stream = stream.sort{|a,b| a.id <=> b.id }
+   end
+   return stream 
 end
