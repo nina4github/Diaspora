@@ -92,7 +92,7 @@ class ApisController < ApplicationController
     @response['actor']=[]
     @contacts.each do |contact|
       profile= contact.person.profile
-      @response['actor']={"id"=>profile.id, 
+      @response['actor']<<{"id"=>profile.id, 
                       "displayName" => profile.full_name,
                       "name" => profile.full_name,
                       "nichname" => profile.diaspora_handle,
