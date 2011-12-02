@@ -447,7 +447,7 @@ class ApisController < ApplicationController
      photos.each do |p|
        stream << p 
      end
-     stream = stream.sort{|a,b| a.id <=> b.id }
+     stream = stream.sort{|a,b| b.created_at <=> a.create_at }
      return stream 
    end
    
