@@ -62,21 +62,21 @@ class ApisController < ApplicationController
    @stream = retrieve_stream(@activity,@user.id)
    
   
-    msgs = Array.new
+    msgs = Hash.new
      # for each of the people in my group (included me)
     # @people_ids.each do |id|
       
       #take the message of which id is author
       @stream.each do |p|
         if msgs[p.author_id].nil?
-          msgs[p.author_id] = Array.new
-        end
+          msgs[p.author_id] = [p]
+        else
           msgs[p.author_id] <<p
-         
+         end
       end 
        msgs.each do |msg_author|
          puts msg_author
-#         msg_author = convert_to_activity_stream(msg_author)
+         msg_author = convert_to_activity_stream(msg_author)
        end
       
     #end
