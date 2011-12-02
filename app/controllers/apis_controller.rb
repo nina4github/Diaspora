@@ -66,9 +66,9 @@ class ApisController < ApplicationController
       tmp=convert_to_activity_stream([p])      
       if msgs[p.author_id].nil?
 
-          msgs[p.author_id] = [tmp]
+          msgs[p.author_id] = tmp
       else
-          msgs[p.author_id] <<tmp
+          msgs[p.author_id] <<tmp[0]
       end      
     end 
              @response=msgs
