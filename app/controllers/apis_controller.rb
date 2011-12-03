@@ -90,11 +90,16 @@ class ApisController < ApplicationController
     @activity = params[:aspectname]
     
     @stream = retrieve_stream(@activity,@user.id)
+    # here I make my filter on last 7 days and group by created at date
+    # stream becomes a OrderedHash at this point
     @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by(&:group_by_criteria)
+    
+    # I want to order the Hash in base to its 
+    @stream = @stream.sort{|a,b| b[0] <=> a[0] }
     @response = Hash.new
     @stream.each do |key, value|
-        value=convert_to_activity_stream(value)
-        @response[key.to_date.wday]=value
+        tmp=convert_to_activity_stream(value)
+        @response[key.to_date.wday]=tmp
     end
     
       render :json  =>{
