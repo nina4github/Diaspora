@@ -427,27 +427,7 @@ class ApisController < ApplicationController
      return posts 
    end
    
-   def retrieve_stream(aspect_name,user_id)
-
-      # I had to recreate the stream object, because it was almost impossible to understand what exactly RUBY is doing behind the scenes
-      # Here the stream includes ALL the StatusMessages that a user
-
-      posts = Post.joins(:post_visibilities,:aspect_visibilities, :aspects, :contacts,'INNER JOIN taggings ON taggings.taggable_id = posts.id','INNER JOIN tags ON taggings.tag_id = tags.id').where(:aspects=>{:name=>aspect_name},:tags=>{:name=>aspect_name}).where('posts.author_id = '+user_id.to_s+' OR contacts.user_id ='+user_id.to_s).order('posts.created_at DESC').select('DISTINCT posts.*,tags.name as tags_name, aspects.id as aspects_id, aspects.name as aspects_name')
-      # I need to do a trick for extracting the photos considering that they do not have a tag, but are linked to a status message that has one... no comment on the DIASPORA decisions of implementation please
-      statusmessage_guids = Array.new
-      # take all the posts that I just collected and take their GUID (really I have no clue what this is!!)
-      posts.each do |p|
-      	statusmessage_guids<<p.guid
-      end
-      # select all the posts of type photo that match the field Status_message_guid with the array we just extracted
-      photos = Post.where(:type=>'Photo',:status_message_guid=>statusmessage_guids).select('posts.*')
-
-      posts<<photos
-      posts = posts.flatten!
-      posts = posts.sort{|a,b| b.created_at <=> a.created_at }
-      return stream 
-    end
-   
+  
    
    def convert_to_activity_stream(stream)
      # transform to activity stream 
