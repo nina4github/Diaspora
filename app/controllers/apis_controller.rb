@@ -71,7 +71,7 @@ class ApisController < ApplicationController
           msgs[p.author_id] <<tmp[0]
       end      
     end 
-             @response=msgs
+    @response=msgs
        #h.each {|key, value| puts "#{key} is #{value}" 
       
       
@@ -92,7 +92,7 @@ class ApisController < ApplicationController
     @stream = retrieve_stream(@activity,@user.id)
     # here I make my filter on last 7 days and group by created at date
     # stream becomes a OrderedHash at this point
-    @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by(&:group_by_criteria)
+    @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by{|s| s.created_at.to_date.to_s(:db)}
     
     # I want to order the Hash in base to its 
     @stream = @stream.sort{|a,b| b[0] <=> a[0] }
