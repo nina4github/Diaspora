@@ -98,11 +98,10 @@ class ApisController < ApplicationController
     # I want to order the Hash in base to its 
     @stream = @stream.sort{|a,b| b[0] <=> a[0] }
     @response = Hash.new
-    # @stream.each do |key, value|
-    #        tmp=convert_to_activity_stream(value)
-    #        @response[key.to_date.wday]=tmp
-    #    end
-    @response = @stream
+    @stream.each do |key, value|
+              tmp=convert_to_activity_stream(value)
+              @response[key.to_date.wday]=tmp
+          end
     
       render :json  =>{
          :stream => @response}
@@ -453,18 +452,18 @@ class ApisController < ApplicationController
        #             "content": "Hello, epic Diasporaverse"
        #           }
        #         }, 
-     @response = Array.new
+     response = Array.new
      stream.each do |msg|
-         @item = Hash.new
+         item = Hash.new
          
                    # build item
-                                                        @item['id']=msg.id
-                                                        @item['published']=msg.created_at
-                                                        @profiletags = Array.new
+                                                        item['id']=msg.id
+                                                        item['published']=msg.created_at
+                                                        profiletags = Array.new
                                                         Profile.find(msg.author_id).tags.each do |tag|
-                                                          @profiletags << tag.name
+                                                          profiletags << tag.name
                                                         end
-                                                        @item['actor']={"id"=>msg.author_id, 
+                                                        item['actor']={"id"=>msg.author_id, 
                                                                         "name" => Profile.find(msg.author_id).full_name,
                                                                         "nichname" => Profile.find(msg.author_id).diaspora_handle,
                                                                         "preferredUsername" =>User.find(msg.author_id).username,
@@ -472,25 +471,25 @@ class ApisController < ApplicationController
                                                                         "gender"=>Profile.find(msg.author_id).gender,
                                                                         "note" => Profile.find(msg.author_id).bio,
                                                                         "picture"=>Profile.find(msg.author_id).image_url,
-                                                                        "tags"=>@profiletags}
+                                                                        "tags"=>profiletags}
                                                                         
-                                                        @item['verb']=Post.find(msg.id).type
-                                                        if (@item['verb']=='Photo')
-                                                          @tags = Array.new
+                                                        item['verb']=Post.find(msg.id).type
+                                                        if (item['verb']=='Photo')
+                                                          tags = Array.new
                                                         else
-                                                          @tags = Array.new
+                                                          tags = Array.new
                                                           msg.tags.each do |tag|
-                                                            @tags << tag.name
+                                                            tags << tag.name
                                                           end
                                                         end
-                                                        @item['object']={
+                                                        item['object']={
                                                           "objectType"=>"activity",
                                                           "content" => msg.text,
-                                                          "tags" => @tags}
+                                                          "tags" => tags}
                    
-            @response << @item   
+            response << item   
           end
-          return @response 
+          return response 
    end
    
 end
