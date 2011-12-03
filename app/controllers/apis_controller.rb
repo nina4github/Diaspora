@@ -96,7 +96,7 @@ class ApisController < ApplicationController
     @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by{|s| s.created_at.to_date.to_s(:db)}
     
     # I want to order the Hash in base to its 
-   # @stream = @stream.sort{|a,b| b[0] <=> a[0] }
+    @stream = @stream.sort{|a,b| b[0] <=> a[0] }
     @response = Hash.new
     @stream.each do |key, value|
               tmp=convert_to_activity_stream(value)
