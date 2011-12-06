@@ -485,7 +485,10 @@ class ApisController < ApplicationController
                                                         item['object']={
                                                           "objectType"=>"activity",
                                                           "content" => msg.text,
-                                                          "tags" => tags}
+                                                          "tags" => tags,
+                                                          "remotePhotoPath" => msg.remote_photo_path,
+                                                          "remotePhotoName" => msg.remote_photo_name 
+                                                          }
                    
             response << item   
           end
