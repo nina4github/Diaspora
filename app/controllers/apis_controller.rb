@@ -388,7 +388,7 @@ class ApisController < ApplicationController
    #   f.write(picture.read)
    #  end
     createphoto()
-   render :json => {'response' => 'everything ok, file uploaded'}
+   
   end
   
   
@@ -432,7 +432,9 @@ class ApisController < ApplicationController
            format.json{ render(:layout => false , :json => {"success" => true, "data" => @photo}.to_json )}
          end
        else
-         respond_with @photo, :location => photos_path, :error => message
+         respond_to do |format|
+            format.json{ render( :json => {"success" => false, "error" => message}.to_json )}
+          end
        end
 
      end
