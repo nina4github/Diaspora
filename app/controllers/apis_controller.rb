@@ -249,6 +249,8 @@ class ApisController < ApplicationController
   end
   
   
+  
+  
   def activities
     params[:activity_name].downcase!
     
@@ -379,16 +381,64 @@ class ApisController < ApplicationController
   
   
  def upload
-  # picture = JSON.parse(params['myfile'])
-  #   picture.rewind
-#  picture = StringIO.new(Base64.decode64(params['myfile']['tempfile']))
-
-   picture =  params['file'] #File.new(params['myfile'])
-   File.open('public/images/' + params['original_filename'], "wb") do |f|
-     f.write(picture.read)
-    end
+   # 
+   # this can upload pictures :)
+   # picture =  params['file'] #File.new(params['myfile'])
+   # File.open('public/images/' + params['original_filename'], "wb") do |f|
+   #   f.write(picture.read)
+   #  end
+    createphoto()
    render :json => {'response' => 'everything ok, file uploaded'}
   end
+  
+  
+  
+  def createphoto
+    params[:photo][:aspect_ids] = [@user.aspects.find_by_name(params[:aspectname]).id]
+    params[:qqfile] = params['file']
+    current_user = @user
+    params[:photo][:public] = false
+     begin
+       raise unless params[:photo][:aspect_ids]
+
+       if params[:photo][:aspect_ids] == "all"
+         params[:photo][:aspect_ids] = current_user.aspects.collect{|x| x.id}
+       elsif params[:photo][:aspect_ids].is_a?(Hash)
+         params[:photo][:aspect_ids] = params[:photo][:aspect_ids].values
+       end
+
+       params[:photo][:user_file] = file_handler(params)
+
+       @photo = current_user.build_post(:photo, params[:photo])
+
+       if @photo.save
+
+         aspects = current_user.aspects_from_ids(params[:photo][:aspect_ids])
+
+         unless @photo.pending
+           current_user.add_to_streams(@photo, aspects)
+           current_user.dispatch_post(@photo, :to => params[:photo][:aspect_ids])
+         end
+
+         if params[:photo][:set_profile_photo]
+           profile_params = {:image_url => @photo.url(:thumb_large),
+                            :image_url_medium => @photo.url(:thumb_medium),
+                            :image_url_small => @photo.url(:thumb_small)}
+           current_user.update_profile(profile_params)
+         end
+
+         respond_to do |format|
+           format.json{ render(:layout => false , :json => {"success" => true, "data" => @photo}.to_json )}
+         end
+       else
+         respond_with @photo, :location => photos_path, :error => message
+       end
+
+     end
+   end
+  
+  
+  
   
   
    private
@@ -396,6 +446,31 @@ class ApisController < ApplicationController
      @user = request.env['oauth2'].resource_owner
    end
    
+   
+   
+   def file_handler(params)
+       ######################## dealing with local files #############
+       # get file name
+       file_name = params[:qqfile]
+       # get file content type
+       att_content_type = (request.content_type.to_s == "") ? "application/octet-stream" : request.content_type.to_s
+       # create tempora##l file
+       begin
+         file = Tempfile.new(file_name, {:encoding =>  'BINARY'})
+         file.print request.raw_post.force_encoding('BINARY')
+       rescue RuntimeError => e
+         raise e unless e.message.include?('cannot generate tempfile')
+         file = Tempfile.new(file_name) # Ruby 1.8 compatibility
+         file.binmode
+         file.print request.raw_post
+       end
+       # put data into this file from raw post request
+
+       # create several required methods for this temporal file
+       Tempfile.send(:define_method, "content_type") {return att_content_type}
+       Tempfile.send(:define_method, "original_filename") {return file_name}
+       file
+   end
    
    # 
    # retrieve the visible posts for a user in a specific aspect and filtered by a specific tag
