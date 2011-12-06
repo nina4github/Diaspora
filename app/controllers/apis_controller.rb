@@ -439,7 +439,29 @@ class ApisController < ApplicationController
    end
   
   
-  
+   def file_handler(params)
+        ######################## dealing with local files #############
+        # get file name
+        file_name = params[:qqfile]
+        # get file content type
+        att_content_type = (request.content_type.to_s == "") ? "application/octet-stream" : request.content_type.to_s
+        # create tempora##l file
+        begin
+          file = Tempfile.new(file_name, {:encoding =>  'BINARY'})
+          file.print request.raw_post.force_encoding('BINARY')
+        rescue RuntimeError => e
+          raise e unless e.message.include?('cannot generate tempfile')
+          file = Tempfile.new(file_name) # Ruby 1.8 compatibility
+          file.binmode
+          file.print request.raw_post
+        end
+        # put data into this file from raw post request
+
+        # create several required methods for this temporal file
+        Tempfile.send(:define_method, "content_type") {return att_content_type}
+        Tempfile.send(:define_method, "original_filename") {return file_name}
+        file
+    end
   
   
    private
@@ -449,29 +471,7 @@ class ApisController < ApplicationController
    
    
    
-   def file_handler(params)
-       ######################## dealing with local files #############
-       # get file name
-       file_name = params[:qqfile]
-       # get file content type
-       att_content_type = (request.content_type.to_s == "") ? "application/octet-stream" : request.content_type.to_s
-       # create tempora##l file
-       begin
-         file = Tempfile.new(file_name, {:encoding =>  'BINARY'})
-         file.print request.raw_post.force_encoding('BINARY')
-       rescue RuntimeError => e
-         raise e unless e.message.include?('cannot generate tempfile')
-         file = Tempfile.new(file_name) # Ruby 1.8 compatibility
-         file.binmode
-         file.print request.raw_post
-       end
-       # put data into this file from raw post request
-
-       # create several required methods for this temporal file
-       Tempfile.send(:define_method, "content_type") {return att_content_type}
-       Tempfile.send(:define_method, "original_filename") {return file_name}
-       file
-   end
+   
    
    # 
    # retrieve the visible posts for a user in a specific aspect and filtered by a specific tag
