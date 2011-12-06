@@ -396,7 +396,7 @@ class ApisController < ApplicationController
   def createphoto
     params[:photo] = Hash.new
     params[:photo][:aspect_ids] = [@user.aspects.find_by_name(params[:aspectname]).id]
-    params[:qqfile] = params['file']
+    params[:qqfile] = params['original_filename']
     current_user = @user
     params[:photo][:public] = false
      begin
