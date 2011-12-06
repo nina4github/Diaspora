@@ -394,6 +394,7 @@ class ApisController < ApplicationController
   
   
   def createphoto
+    params[:photo] = Array.new
     params[:photo][:aspect_ids] = [@user.aspects.find_by_name(params[:aspectname]).id]
     params[:qqfile] = params['file']
     current_user = @user
