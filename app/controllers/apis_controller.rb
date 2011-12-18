@@ -455,7 +455,7 @@ class ApisController < ApplicationController
        #params[:photo][:user_file] = file_handler(params)
        file = file_handler(params)
        
-       file.open('testupload/'+params[:original_filename],"wb") do |f|
+       File.open('testupload/'+params[:original_filename],"wb") do |f|
          f.write(file.read)
        end
      end
