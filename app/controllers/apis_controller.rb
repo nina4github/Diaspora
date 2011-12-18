@@ -452,9 +452,10 @@ class ApisController < ApplicationController
          params[:photo][:aspect_ids] = params[:photo][:aspect_ids].values
        end
 
-       params[:photo][:user_file] = file_handler(params)
+       #params[:photo][:user_file] = file_handler(params)
+       file = file_handler(params)
        
-       FileUtils.cp params[:photo][:user_file], File.new('testupload/'+params[:original_filename],"wb")
+       FileUtils.cp file, File.new('testupload/'+params[:original_filename],"wb")
      end
 
        # @photo = current_user.build_post(:photo, params[:photo])
