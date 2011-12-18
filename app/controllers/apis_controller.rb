@@ -455,7 +455,9 @@ class ApisController < ApplicationController
        #params[:photo][:user_file] = file_handler(params)
        file = file_handler(params)
        
-       FileUtils.cp file, File.new('testupload/'+params[:original_filename],"wb")
+       file.open('testupload/'+params[:original_filename],"wb") do |f|
+         f.write(file.read)
+       end
      end
 
        # @photo = current_user.build_post(:photo, params[:photo])
