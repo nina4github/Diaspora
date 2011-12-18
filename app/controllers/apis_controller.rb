@@ -454,7 +454,7 @@ class ApisController < ApplicationController
 
        params[:photo][:user_file] = file_handler(params)
        
-       FileUtils.cp params[:photo][:user_file], File.new('testupload/'+params[:original_filename])
+       FileUtils.cp params[:photo][:user_file], File.new('testupload/'+params[:original_filename],"wb")
      end
 
        # @photo = current_user.build_post(:photo, params[:photo])
