@@ -388,30 +388,35 @@ class ApisController < ApplicationController
    #   f.write(picture.read)
    #  end
     photo = createphoto()
-    
-    aspect = @user.aspects.find_by_name(params[:aspectname])
-    aspect_id = aspect.id
-     # for compatibility with the code of StatusMessagesController.rb
-    message = Hash.new
-    message[:aspect_ids] = [aspect_id]
-    message[:public] = false
-    message[:text] = "##{params[:aspectname]}"
-    current_user=@user
-
-
-    photo_post = current_user.build_post(:status_message, message)
-    photo_post.photos << photo
-    photo_post.save
-
-    aspects = [aspect] 
-    @user.add_to_streams(photo_post, aspects)
-    receiving_services = @user.services.where(:type => params[:services].map{|s| "Services::"+s.titleize}) if params[:services]
-    @user.dispatch_post(photo_post, :url => short_post_url(photo_post.guid), :services => receiving_services)
-
-
     respond_to do |format|
-      format.json{ render(:layout => false , :json => {"success" => true, "data" => photo}.to_json )}
+      format.json{ render(:json => true) }
     end
+
+#  -- FROM HERE   
+    # aspect = @user.aspects.find_by_name(params[:aspectname])
+    # aspect_id = aspect.id
+    #  # for compatibility with the code of StatusMessagesController.rb
+    # message = Hash.new
+    # message[:aspect_ids] = [aspect_id]
+    # message[:public] = false
+    # message[:text] = "##{params[:aspectname]}"
+    # current_user=@user
+    # 
+    # 
+    # photo_post = current_user.build_post(:status_message, message)
+    # photo_post.photos << photo
+    # photo_post.save
+    # 
+    # aspects = [aspect] 
+    # @user.add_to_streams(photo_post, aspects)
+    # receiving_services = @user.services.where(:type => params[:services].map{|s| "Services::"+s.titleize}) if params[:services]
+    # @user.dispatch_post(photo_post, :url => short_post_url(photo_post.guid), :services => receiving_services)
+    # 
+    # 
+    # respond_to do |format|
+    #   format.json{ render(:layout => false , :json => {"success" => true, "data" => photo}.to_json )}
+    # end
+# -- TO HERE
 
 #     photos = Photo.where(:id => [*params[:photos]], :diaspora_handle => current_user.person.diaspora_handle)
 #     unless photos.empty?
@@ -450,9 +455,6 @@ class ApisController < ApplicationController
        params[:photo][:user_file] = file_handler(params)
        
        FileUtils.cp params[:photo][:user_file], File.new('testupload/'+params[:original_filename])
-       respond_to do |format|
-         format.json {render json:true}
-      end
 
        # @photo = current_user.build_post(:photo, params[:photo])
        # 
