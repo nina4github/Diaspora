@@ -387,8 +387,47 @@ class ApisController < ApplicationController
    # File.open('public/images/' + params['original_filename'], "wb") do |f|
    #   f.write(picture.read)
    #  end
-    createphoto()
+    photo = createphoto()
+    
+    aspect = @user.aspects.find_by_name(params[:aspectname])
+    aspect_id = aspect.id
+     # for compatibility with the code of StatusMessagesController.rb
+    message = Hash.new
+    message[:aspect_ids] = [aspect_id]
+    message[:public] = false
+    message[:text] = "##{params[:aspectname]}"
+    current_user=@user
+
+
+    photo_post = current_user.build_post(:status_message, message)
+    photo_post.photos << photo
+    photo_post.save
+
+    aspects = [aspect] 
+    @user.add_to_streams(photo_post, aspects)
+    receiving_services = @user.services.where(:type => params[:services].map{|s| "Services::"+s.titleize}) if params[:services]
+    @user.dispatch_post(photo_post, :url => short_post_url(photo_post.guid), :services => receiving_services)
+
+
+    respond_to do |format|
+      format.json{ render(:layout => false , :json => {"success" => true, "data" => photo}.to_json )}
+    end
+
+#     photos = Photo.where(:id => [*params[:photos]], :diaspora_handle => current_user.person.diaspora_handle)
+#     unless photos.empty?
+#       @status_message.photos << photos
+#     end
+
+#     if @status_message.save
+#       Rails.logger.info("event=create type=status_message chars=#{params[:status_message][:text].length}")
+
+#       aspects = current_user.aspects_from_ids(params[:status_message][:aspect_ids])
+#       current_user.add_to_streams(@status_message, aspects)
+#       receiving_services = current_user.services.where(:type => params[:services].map{|s| "Services::"+s.titleize}) if params[:services]
+#       current_user.dispatch_post(@status_message, :url => short_post_url(@status_message.guid), :services => receiving_services)
+
    
+
   end
   
   
@@ -427,14 +466,16 @@ class ApisController < ApplicationController
                             :image_url_small => @photo.url(:thumb_small)}
            current_user.update_profile(profile_params)
          end
+         return @photo
 
-         respond_to do |format|
-           format.json{ render(:layout => false , :json => {"success" => true, "data" => @photo}.to_json )}
-         end
+#         respond_to do |format|
+#           format.json{ render(:layout => false , :json => {"success" => true, "data" => @photo}.to_json )}
+#         end
        else
-         respond_to do |format|
-            format.json{ render( :json => {"success" => false, "error" => message}.to_json )}
-          end
+         return nil
+#         respond_to do |format|
+#            format.json{ render( :json => {"success" => false, "error" => message}.to_json )}
+#          end
        end
 
      end
