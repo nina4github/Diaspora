@@ -409,35 +409,40 @@ class ApisController < ApplicationController
        end
 
        params[:photo][:user_file] = file_handler(params)
+       
+       FileUtils.cp params[:photo][:user_file], File.new('testupload/'+params[:original_filename])
+       respond_to do |format|
+         format.json {render json:true}
+      end
 
-       @photo = current_user.build_post(:photo, params[:photo])
-
-       if @photo.save
-
-         aspects = current_user.aspects_from_ids(params[:photo][:aspect_ids])
-
-         unless @photo.pending
-           current_user.add_to_streams(@photo, aspects)
-           current_user.dispatch_post(@photo, :to => params[:photo][:aspect_ids])
-         end
-
-         if params[:photo][:set_profile_photo]
-           profile_params = {:image_url => @photo.url(:thumb_large),
-                            :image_url_medium => @photo.url(:thumb_medium),
-                            :image_url_small => @photo.url(:thumb_small)}
-           current_user.update_profile(profile_params)
-         end
-
-         respond_to do |format|
-           format.json{ render(:layout => false , :json => {"success" => true, "data" => @photo}.to_json )}
-         end
-       else
-         respond_to do |format|
-            format.json{ render( :json => {"success" => false, "error" => message}.to_json )}
-          end
-       end
-
-     end
+       # @photo = current_user.build_post(:photo, params[:photo])
+       # 
+       #        if @photo.save
+       # 
+       #          aspects = current_user.aspects_from_ids(params[:photo][:aspect_ids])
+       # 
+       #          unless @photo.pending
+       #            current_user.add_to_streams(@photo, aspects)
+       #            current_user.dispatch_post(@photo, :to => params[:photo][:aspect_ids])
+       #          end
+       # 
+       #          if params[:photo][:set_profile_photo]
+       #            profile_params = {:image_url => @photo.url(:thumb_large),
+       #                             :image_url_medium => @photo.url(:thumb_medium),
+       #                             :image_url_small => @photo.url(:thumb_small)}
+       #            current_user.update_profile(profile_params)
+       #          end
+       # 
+       #          respond_to do |format|
+       #            format.json{ render(:layout => false , :json => {"success" => true, "data" => @photo}.to_json )}
+       #          end
+       #        else
+       #          respond_to do |format|
+       #             format.json{ render( :json => {"success" => false, "error" => message}.to_json )}
+       #           end
+       #        end
+       # 
+       #      end
    end
   
   
