@@ -456,7 +456,7 @@ class ApisController < ApplicationController
        file = file_handler(params)
        
        File.open('testupload/'+params[:original_filename],"wb") do |f|
-         f.write(file.read)
+         f.write(open(file.path, "rb") {|io| io.read})
        end
      end
 
