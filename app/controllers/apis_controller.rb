@@ -8,7 +8,7 @@ class ApisController < ApplicationController
     profile = @person.profile
     profiletags = Array.new
     profile.tags.each do |tag|
-      @profiletags << tag.name
+      profiletags << tag.name
     end
     @response = {"id"=>profile.id, 
                         "name" => profile.full_name,
