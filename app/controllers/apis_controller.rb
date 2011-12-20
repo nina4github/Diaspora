@@ -5,10 +5,24 @@ class ApisController < ApplicationController
 
   def me
     @person = @user.person
-    render :json => {
-                      :birthday => @person.profile.birthday,
-                      :name => @person.name,
-                      :uid => @user.username
+    profile = @person.profile
+    profiletags = Array.new
+    profile.tags.each do |tag|
+      @profiletags << tag.name
+    end
+    @response['actor']<<{"id"=>profile.id, 
+                        "name" => profile.full_name,
+                        "nichname" => profile.diaspora_handle,
+                        "preferredUsername" =>User.find(profile.id).username,
+                        "bithday"=>profile.birthday,
+                        "gender"=>profile.gender,
+                        "note" => profile.bio,
+                        "picture"=>profile.image_url,
+                        "tags"=>profiletags}
+    render :json => {@response
+                      # :birthday => @person.profile.birthday,
+                      #                       :name => @person.name,
+                      #                       :uid => @user.username
                     }
   end
 
