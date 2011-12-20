@@ -10,16 +10,16 @@ class ApisController < ApplicationController
     profile.tags.each do |tag|
       @profiletags << tag.name
     end
-    @response['actor']<<{"id"=>profile.id, 
+    @response = {"id"=>profile.id, 
                         "name" => profile.full_name,
                         "nichname" => profile.diaspora_handle,
-                        "preferredUsername" =>User.find(profile.id).username,
+                        "preferredUsername" =>@user.username,
                         "bithday"=>profile.birthday,
                         "gender"=>profile.gender,
                         "note" => profile.bio,
                         "picture"=>profile.image_url,
                         "tags"=>profiletags}
-    render :json => {@response
+    render :json => {:actor=>@response
                       # :birthday => @person.profile.birthday,
                       #                       :name => @person.name,
                       #                       :uid => @user.username
