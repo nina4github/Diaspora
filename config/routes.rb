@@ -155,6 +155,7 @@ Diaspora::Application.routes.draw do
 
   scope 'api/v0', :controller => :apis do
     get :me
+    get :userinfo
     get :posts
     get :aspects 
 #    get "aspects/:aspectname" => :stream_old

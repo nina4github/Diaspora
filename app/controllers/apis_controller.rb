@@ -3,7 +3,17 @@ class ApisController < ApplicationController
   before_filter :set_user_from_oauth
   respond_to :json
 
-  def me
+   def me
+  #    debugger
+      @person = @user.person
+      render :json => {
+                        :birthday => @person.profile.birthday,
+                        :name => @person.name,
+                        :uid => @user.username
+                      }
+    end
+    
+  def userinfo
     @person = @user.person
     profile = @person.profile
     profiletags = Array.new
@@ -20,9 +30,9 @@ class ApisController < ApplicationController
                         "picture"=>profile.image_url,
                         "tags"=>profiletags}
     render :json => {:actor=>@response
-                      # :birthday => @person.profile.birthday,
-                      #                       :name => @person.name,
-                      #                       :uid => @user.username
+                     # :birthday => @person.profile.birthday,
+                     #                      :name => @person.name,
+                     #                      :uid => @user.username
                     }
   end
 
