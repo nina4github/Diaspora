@@ -154,8 +154,8 @@ Diaspora::Application.routes.draw do
   end
 
   scope 'api/v0', :controller => :apis do
-    get :me
-    get :userinfo
+    get :me # for costistency with oauth of diaspora client
+  
     get :posts
     get :aspects 
 #    get "aspects/:aspectname" => :stream_old
@@ -167,6 +167,7 @@ Diaspora::Application.routes.draw do
     post "aspects/:aspectname/upload" => :upload
     
     get :profiles # get params[:ids] of array of people ids
+    get :profile  # singular and without parameters retrieve the profiel of the current user
     get "tags/:tag_name/" =>:tags
     
     post "aspects" => :newaspect

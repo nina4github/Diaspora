@@ -13,7 +13,7 @@ class ApisController < ApplicationController
                       }
     end
     
-  def userinfo
+  def profile
     @person = @user.person
     profile = @person.profile
     profiletags = Array.new
@@ -167,6 +167,7 @@ class ApisController < ApplicationController
  end
  
  
+# TODO I guess this will need to be fixed with a consistent way to show profile info as the other contacts and profile functions
  def profiles
    @person_ids = JSON.parse(params[:ids])
    @profiles = Array.new
