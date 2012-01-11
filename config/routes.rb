@@ -176,7 +176,31 @@ Diaspora::Application.routes.draw do
    
     
   end
-
+  
+  #*************api version 1*********************#
+  scope 'api/v1', :controller => :apis do
+      get :me # for costistency with oauth of diaspora client
+    
+      get :posts
+      get :aspects 
+  #    get "aspects/:aspectname" => :stream_old
+      get "aspects/:aspectname" => :stream
+      get "aspects/:aspectname/contacts" => :contacts
+      get "aspects/:aspectname/last" => :last
+      get "aspects/:aspectname/week" => :week
+      
+      post "aspects/:aspectname/upload" => :upload
+      
+      get :profiles # get params[:ids] of array of people ids
+      get :profile  # singular and without parameters retrieve the profiel of the current user
+      get "tags/:tag_name/" =>:tags
+      
+      post "aspects" => :newaspect
+      post :create # new post
+      post :group
+      
+    end
+  #*************************************************#
 
   # Mobile site
 
