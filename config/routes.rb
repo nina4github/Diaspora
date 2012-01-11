@@ -178,7 +178,7 @@ Diaspora::Application.routes.draw do
   end
   
   #*************api version 1*********************#
-  scope 'api/v1', :controller => :apis do
+  scope 'api/v1', :controller => :apis_yili do
       get :me # for costistency with oauth of diaspora client
     
       get :posts
