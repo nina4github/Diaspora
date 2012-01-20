@@ -53,18 +53,17 @@ class ApisYiliController < ApplicationController
     end
   
     
-    # GET all posts within a specific aspect, the aspect belongs to the current user
+    # GET all posts within a specific aspect for the a user
     def stream
         aspects = @user.aspects
-        @activity = params[:aspectname]
-        
-        #ids = [aspects.find_by_name(@activity).id]
-        @stream = retrieve_stream(@activity,@user.id)
-        @stream = @stream.sort{|a,b| b.created_at <=> a.created_at }
-        @stream = convert_to_activity_stream(@stream)
-                                                          
+        aspects.each do |aspect|
+            if aspect.name == params[:aspectname]
+                posts=aspect.posts
+            end
+        end    
+                                    
         render :json  => {
-             :stream => @stream
+             :posts =>  posts
         }
     end
   
@@ -373,187 +372,85 @@ class ApisYiliController < ApplicationController
   
   
   
-  def createphoto
-    params[:photo] = Hash.new
-    params[:photo][:aspect_ids] = [@user.aspects.find_by_name(params[:aspectname]).id]
-    params[:qqfile] = params['original_filename']
-    current_user = @user
-    params[:photo][:public] = false
-     begin
-       raise unless params[:photo][:aspect_ids]
-
-       if params[:photo][:aspect_ids] == "all"
-         params[:photo][:aspect_ids] = current_user.aspects.collect{|x| x.id}
-       elsif params[:photo][:aspect_ids].is_a?(Hash)
-         params[:photo][:aspect_ids] = params[:photo][:aspect_ids].values
-       end
-
-       params[:photo][:user_file] = file_handler(params)
-     #   file = file_handler(params)
-     #   
-     #   File.open('testupload/'+params[:original_filename],"wb") do |f|
-     #     f.write(open(file.path, "rb") {|io| io.read})
-     #   end
-     # end
-
-       @photo = current_user.build_post(:photo, params[:photo])
-              if @photo.save
-                aspects = current_user.aspects_from_ids(params[:photo][:aspect_ids])
-       
-                unless @photo.pending
-                  current_user.add_to_streams(@photo, aspects)
-                  current_user.dispatch_post(@photo, :to => params[:photo][:aspect_ids])
-                end
-       
-                if params[:photo][:set_profile_photo]
-                  profile_params = {:image_url => @photo.url(:thumb_large),
-                                   :image_url_medium => @photo.url(:thumb_medium),
-                                   :image_url_small => @photo.url(:thumb_small)}
-                  current_user.update_profile(profile_params)
-                end
-       
-                # respond_to do |format|
-                #   format.json{ render(:layout => false , :json => {"success" => true, "data" => @photo}.to_json )}
-                # end
-              # else
-              #   respond_to do |format|
-              #      format.json{ render( :json => {"success" => false, "error" => message}.to_json )}
-              #    end
-              end
-       
-            end
-   end
-  
-  
-   def file_handler(params)
-        ######################## dealing with local files #############
-        # get file name
-        file_name = params[:qqfile]
-        # get file content type
-        att_content_type = (request.content_type.to_s == "") ? "application/octet-stream" : request.content_type.to_s
-        # create tempora##l file
+    def createphoto
+        params[:photo] = Hash.new
+        params[:photo][:aspect_ids] = [@user.aspects.find_by_name(params[:aspectname]).id]
+        params[:qqfile] = params['original_filename']
+        current_user = @user
+        params[:photo][:public] = false
         begin
-          file = Tempfile.new(file_name, {:encoding =>  'BINARY'})
-          file.print request.raw_post.force_encoding('BINARY')
-        rescue RuntimeError => e
-          raise e unless e.message.include?('cannot generate tempfile')
-          file = Tempfile.new(file_name) # Ruby 1.8 compatibility
-          file.binmode
-          file.print request.raw_post
-        end
-        # put data into this file from raw post request
-
-        # create several required methods for this temporal file
-        Tempfile.send(:define_method, "content_type") {return att_content_type}
-        Tempfile.send(:define_method, "original_filename") {return file_name}
-        file
-    end
+            raise unless params[:photo][:aspect_ids]
   
+            if params[:photo][:aspect_ids] == "all"
+                params[:photo][:aspect_ids] = current_user.aspects.collect{|x| x.id}
+            elsif params[:photo][:aspect_ids].is_a?(Hash)
+                params[:photo][:aspect_ids] = params[:photo][:aspect_ids].values
+            end
   
-   private
-   def set_user_from_oauth
-     @user = request.env['oauth2'].resource_owner
-   end
-   
-   
-   
-   
-   
-   # 
-   # retrieve the visible posts for a user in a specific aspect and filtered by a specific tag
-   # the tag filter is used to guarantee the topic of the message match the topic of the aspect
-   # the stream has to be filled with photos because they do not have a tag when they are created but they are associated to a statusmessage through the GUID and STATUS_MESSAGE_GUID fields in Post
-   # 
-   # aspect_name = string with the name of the activity on focus (for aspect and tag filtering)
-   # user_id = id of the user from which to control the visibility of the posts
-   # return stream
-   #
-   # todo => review how photos are created
-   def retrieve_stream(aspect_name,user_id)
-     
-     # I had to recreate the stream object, because it was almost impossible to understand what exactly RUBY is doing behind the scenes
-     # Here the stream includes ALL the StatusMessages that a user
-     
-     posts = Post.joins(:post_visibilities,:aspect_visibilities, :aspects, :contacts,'INNER JOIN taggings ON taggings.taggable_id = posts.id','INNER JOIN tags ON taggings.tag_id = tags.id').where(:aspects=>{:name=>aspect_name},:tags=>{:name=>aspect_name}).where('posts.author_id = '+user_id.to_s+' OR contacts.user_id ='+user_id.to_s).order('posts.created_at DESC').select('DISTINCT posts.*,tags.name as tags_name, aspects.id as aspects_id, aspects.name as aspects_name')
-     # I need to do a trick for extracting the photos considering that they do not have a tag, but are linked to a status message that has one... no comment on the DIASPORA decisions of implementation please
-     statusmessage_guids = Array.new
-     # take all the posts that I just collected and take their GUID (really I have no clue what this is!!)
-     posts.each do |p|
-     	statusmessage_guids<<p.guid
+            params[:photo][:user_file] = file_handler(params)
+             #   file = file_handler(params)
+             #   
+             #   File.open('testupload/'+params[:original_filename],"wb") do |f|
+             #     f.write(open(file.path, "rb") {|io| io.read})
+             #   end
+             # end
+  
+             @photo = current_user.build_post(:photo, params[:photo])
+             if @photo.save
+                  aspects = current_user.aspects_from_ids(params[:photo][:aspect_ids])
+         
+                  unless @photo.pending
+                    current_user.add_to_streams(@photo, aspects)
+                    current_user.dispatch_post(@photo, :to => params[:photo][:aspect_ids])
+                  end
+         
+                  if params[:photo][:set_profile_photo]
+                    profile_params = {:image_url => @photo.url(:thumb_large),
+                                     :image_url_medium => @photo.url(:thumb_medium),
+                                     :image_url_small => @photo.url(:thumb_small)}
+                    current_user.update_profile(profile_params)
+                  end
+         
+                  # respond_to do |format|
+                  #   format.json{ render(:layout => false , :json => {"success" => true, "data" => @photo}.to_json )}
+                  # end
+                # else
+                #   respond_to do |format|
+                #      format.json{ render( :json => {"success" => false, "error" => message}.to_json )}
+                #    end
+             end
+         end
      end
-     # select all the posts of type photo that match the field Status_message_guid with the array we just extracted
-     photos = Post.where(:type=>'Photo',:status_message_guid=>statusmessage_guids).select('posts.*')
-
-     posts << photos
-     posts.flatten! # after having had the photos list I need to flatten the list so that I have elements all at the same nesting level
-    
-     return posts 
-   end
-   
   
-   
-   def convert_to_activity_stream(stream)
-     # transform to activity stream 
-       # "items": [
-       #         {
-       #           "id": "456",
-       #           "published": "2011-02-10T15:04:55Z",
-       #           "actor": {
-       #             "id": "42",
-       #             "displayName": "Jane Doe",
-       #             "name": "Jane Doe",
-       #             "nickname": "jane@pod.example.org",
-       #             "preferredUsername": "jane",
-       #             "birthday": "1975-02-14",
-       #             "gender": "who knows",
-       #             "note": "Janes profile description"
-       #             "picture": "http://example.com/uploads/images/foo.png"
-       #           },
-       #           "verb": "post",
-       #           "object": {
-       #             "content": "Hello, epic Diasporaverse"
-       #           }
-       #         }, 
-     response = Array.new
-     stream.each do |msg|
-         item = Hash.new
-              # build item
-              item['id']=msg.id
-              item['published']=msg.created_at
-              profiletags = Array.new
-              Profile.find(msg.author_id).tags.each do |tag|
-                profiletags << tag.name
-              end
-              item['actor']={"id"=>msg.author_id, 
-                              "name" => Profile.find(msg.author_id).full_name,
-                              "nichname" => Profile.find(msg.author_id).diaspora_handle,
-                              "preferredUsername" =>User.find(msg.author_id).username,
-                              "bithday"=>Profile.find(msg.author_id).birthday,
-                              "gender"=>Profile.find(msg.author_id).gender,
-                              "note" => Profile.find(msg.author_id).bio,
-                              "picture"=>Profile.find(msg.author_id).image_url,
-                              "tags"=>profiletags}
-                              
-              item['verb']=Post.find(msg.id).type
-              if (item['verb']=='Photo')
-                tags = Array.new
-              else
-                tags = Array.new
-                msg.tags.each do |tag|
-                  tags << tag.name
-                end
-              end
-              item['object']={
-                "objectType"=>"activity",
-                "content" => msg.text,
-                "tags" => tags,
-                "remotePhotoPath" => msg.remote_photo_path,
-                "remotePhotoName" => msg.remote_photo_name 
-                }
-                   
-            response << item   
+  
+     def file_handler(params)
+          ######################## dealing with local files #############
+          # get file name
+          file_name = params[:qqfile]
+          # get file content type
+          att_content_type = (request.content_type.to_s == "") ? "application/octet-stream" : request.content_type.to_s
+          # create tempora##l file
+          begin
+            file = Tempfile.new(file_name, {:encoding =>  'BINARY'})
+            file.print request.raw_post.force_encoding('BINARY')
+          rescue RuntimeError => e
+            raise e unless e.message.include?('cannot generate tempfile')
+            file = Tempfile.new(file_name) # Ruby 1.8 compatibility
+            file.binmode
+            file.print request.raw_post
           end
-          return response 
-   end
+          # put data into this file from raw post request
+  
+          # create several required methods for this temporal file
+          Tempfile.send(:define_method, "content_type") {return att_content_type}
+          Tempfile.send(:define_method, "original_filename") {return file_name}
+          file
+     end
+  
+  
+     private
+     def set_user_from_oauth
+       @user = request.env['oauth2'].resource_owner
+     end
    
 end
