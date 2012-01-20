@@ -55,15 +55,15 @@ class ApisYiliController < ApplicationController
     
     # GET all posts within a specific aspect for the a user
     def stream
-        aspects = @user.aspects
-        aspects.each do |aspect|
+        @aspects = @user.aspects
+        @aspects.each do |aspect|
             if aspect.name == params[:aspectname]
-                posts=aspect.posts
+                @posts=aspect.posts
             end
         end    
                                     
         render :json  => {
-             :posts =>  posts
+             :posts =>  @posts
         }
     end
   
