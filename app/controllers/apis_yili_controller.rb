@@ -38,7 +38,14 @@ class ApisYiliController < ApplicationController
 
     #create a new user or object
     def newprofile
-        
+        user=User.new(params)
+        user.password(params[:password])
+        user.password_confirmation(params[:password_confirmation]) 
+        user.setup(params);
+        user.save
+        render :json => {
+               :mes => "user created"
+        }
     end
     
     # GET all posts of the current user
