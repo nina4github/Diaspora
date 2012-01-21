@@ -38,7 +38,10 @@ class ApisYiliController < ApplicationController
 
     #create a new user or object
     def newprofile
-        User.build(params);
+        #User.build(params);
+        render :json => {
+                     :mes => "you have reached the center of ruby world!"
+              }
     end
     
     # GET all posts of the current user
