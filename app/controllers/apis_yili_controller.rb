@@ -36,6 +36,11 @@ class ApisYiliController < ApplicationController
         }
     end
 
+    #create a new user or object
+    def newprofile
+        opts= params[:user]
+        User.build(opts);
+    end
     
     # GET all posts of the current user
     def posts
@@ -78,12 +83,12 @@ class ApisYiliController < ApplicationController
         @response = Hash.new
         @response['actor']=[]
         @contacts.each do |contact|
-           profile= contact.person.profile
-           @profiletags = Array.new
+            profile= contact.person.profile
+            @profiletags = Array.new
             profile.tags.each do |tag|
                 @profiletags << tag.name
             end
-          @response['actor']<<{"id"=>profile.id, 
+            @response['actor']<<{"id"=>profile.id, 
                           "name" => profile.full_name,
                           "nichname" => profile.diaspora_handle,
                           "preferredUsername" =>User.find(profile.id).username,
