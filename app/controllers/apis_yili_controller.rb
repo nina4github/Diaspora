@@ -38,8 +38,7 @@ class ApisYiliController < ApplicationController
 
     #create a new user or object
     def newprofile
-        opts= params[:user]
-        User.build(opts);
+        User.build(params);
     end
     
     # GET all posts of the current user
