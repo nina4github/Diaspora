@@ -35,13 +35,13 @@ class ApisYiliController < ApplicationController
                          # :uid => @user.username
         }
     end
-
+    #test: http://idea.itu.dk:8080/v1/newprofile.json?user=test@idea.itu.dk:3000&username=test2&email=test2@gmail.com&password=123456&password_confirmation=123456
     #create a new user or object
     def newprofile
-        user=User.new(params)
-        user.password(params[:password])
-        user.password_confirmation(params[:password_confirmation]) 
-        user.setup(params);
+        user=User.new
+        user.password=params[:password]
+        user.password_confirmation=params[:password_confirmation]
+        user.setup(params)
         user.save
         render :json => {
                :mes => "user created"
