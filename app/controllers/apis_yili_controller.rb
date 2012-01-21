@@ -40,7 +40,7 @@ class ApisYiliController < ApplicationController
     def newprofile
         #User.build(params);
         render :json => {
-                     :mes => "you have reached the center of ruby world!"
+                     :params => params
               }
     end
     
