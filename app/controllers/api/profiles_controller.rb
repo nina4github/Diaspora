@@ -1,4 +1,5 @@
 class ProfilesController < BaseController
+  
     def show
         if params[:id]!=0
             @user=User.find(params[:id])
