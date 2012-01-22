@@ -1,15 +1,5 @@
 class ApisYiliController < ApplicationController
-    authenticate_with_oauth
-    before_filter :set_user_from_oauth
-    respond_to :json
-
-    def me
-        @person = @user.person
-        render :json => { :birthday => @person.profile.birthday,
-                          :name => @person.name,
-                          :uid => @user.username
-        }
-    end
+    
     
     # GET the current user's profile
     def profile
@@ -29,23 +19,7 @@ class ApisYiliController < ApplicationController
                       "picture"=>profile.image_url,
                       "tags"=>profiletags
         }
-        render :json => {:actor=>@response
-                         # :birthday => @person.profile.birthday,
-                         # :name => @person.name,
-                         # :uid => @user.username
-        }
-    end
-    #test: http://idea.itu.dk:8080/v1/newprofile.json?user=test@idea.itu.dk:3000&username=test2&email=test2@gmail.com&password=123456&password_confirmation=123456
-    #create a new user or object
-    def newprofile
-        user=User.new
-        user.password=params[:password]
-        user.password_confirmation=params[:password_confirmation]
-        user.setup(params)
-        user.save
-        render :json => {
-               :mes => "user created"
-        }
+        render :json => {:actor=>@response }
     end
     
     # GET all posts of the current user
@@ -459,9 +433,6 @@ class ApisYiliController < ApplicationController
      end
   
   
-     private
-     def set_user_from_oauth
-       @user = request.env['oauth2'].resource_owner
-     end
+     
    
 end
