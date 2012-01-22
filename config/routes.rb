@@ -184,7 +184,7 @@ Diaspora::Application.routes.draw do
   end
   
   namespace :apiv1 do 
-      match ':controller(/:action(/:id))'
+      resources :profiles
   end
   
   #*************************************************#
