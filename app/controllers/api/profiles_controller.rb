@@ -1,4 +1,4 @@
-class ProfilesController
+class Api::ProfilesController < BaseController
         
     def show
         if params[:id]!=0
