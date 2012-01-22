@@ -147,13 +147,9 @@ class ApisController < ApplicationController
     
     @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now.midnight - 1.day])
 
-    @response = Hash.new
-    @stream.each do |key, value|
-              tmp=convert_to_activity_stream(value)
-              @response[key]=tmp
-          end
+    @stream = convert_to_activity_stream(@stream)
       render :json  =>{
-         :stream => @response}
+         :stream => @stream}
     end
  
   # GET contacts for an aspect
