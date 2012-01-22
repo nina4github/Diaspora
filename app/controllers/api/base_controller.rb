@@ -1,6 +1,5 @@
 class BaseController
   
-    protected
     authenticate_with_oauth
     before_filter :set_user_from_oauth
     respond_to :json

@@ -180,10 +180,7 @@ Diaspora::Application.routes.draw do
   #*************api version 1*********************#
   
   namespace :api do
-      resources :users
-      resources :profiles
-      resources :aspects
-      resources :posts
+      resources :users, :profiles, :aspects, :posts
   end
   
   #*************************************************#
