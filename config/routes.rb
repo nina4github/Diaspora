@@ -184,7 +184,7 @@ Diaspora::Application.routes.draw do
   end
   
   namespace :apiv1 do 
-      resources :profiles
+      resources :profiles, :users, :ascpects, :posts
   end
   
   #*************************************************#

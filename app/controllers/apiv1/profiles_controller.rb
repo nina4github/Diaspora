@@ -1,6 +1,6 @@
 class Apiv1::ProfilesController < ApplicationController
-    authenticate_with_oauth
-    before_filter :set_user_from_oauth
+    #authenticate_with_oauth
+    #before_filter :set_user_from_oauth
     respond_to :json
       
     def set_user_from_oauth
@@ -8,9 +8,9 @@ class Apiv1::ProfilesController < ApplicationController
     end   
      
     def show
-        if params[:id]!=0
+        #if params[:id]!=0
             @user=User.find(params[:id])
-        end
+        #end
         @person = @user.person
         profile = @person.profile
         profiletags = Array.new
