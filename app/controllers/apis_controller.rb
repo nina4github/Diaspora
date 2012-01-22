@@ -125,7 +125,7 @@ class ApisController < ApplicationController
     @stream.each do |key, value|
               tmp=convert_to_activity_stream(value)
               @response[key.to_date.wday]=tmp
-              @response[key]=tmp
+              #@response[key]=tmp
           end
      @response = @response.sort {|a,b| b[0] <=> a[0] }
       render :json  =>{
