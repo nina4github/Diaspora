@@ -1,4 +1,4 @@
-class Api::ProfilesController < ApplicationController
+class ProfilesController < ApplicationController
     authenticate_with_oauth
     before_filter :set_user_from_oauth
     respond_to :json
