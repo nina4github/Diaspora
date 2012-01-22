@@ -183,8 +183,8 @@ Diaspora::Application.routes.draw do
       get :profile 
   end
   
-  namespace :apiv1 do
-      resources :users, :profiles, :aspects, :posts
+  map.namespace :apiv1 do |api|
+      api.resources :users, :profiles, :aspects, :posts
   end
   
   #*************************************************#
