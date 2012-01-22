@@ -117,17 +117,17 @@ class ApisController < ApplicationController
     # here I make my filter on last 7 days and group by created at date
     # stream becomes a OrderedHash at this point
     
-    @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by{|s| s.created_at.to_date.to_s(:db)}
+    @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by{|s| s.created_at.to_date.to_s(:db)}.order_by{"posts.create_at"}
     
     # I want to order the Hash in base to its 
    # @stream = @stream.sort {|a,b| a[0] <=> b[0] }
     @response = Hash.new
     @stream.each do |key, value|
               tmp=convert_to_activity_stream(value)
-              @response[key.to_date.wday]=tmp
-              #@response[key]=tmp
+              #@response[key.to_date.wday]=tmp
+              @response[key]=tmp
           end
-     @response = @response.sort {|a,b| b[0] <=> a[0] }
+    # @response = @response.sort {|a,b| b[0] <=> a[0] }
       render :json  =>{
          :stream => @response}
     
