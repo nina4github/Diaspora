@@ -124,10 +124,10 @@ class ApisController < ApplicationController
     @response = Hash.new
     @stream.each do |key, value|
               tmp=convert_to_activity_stream(value)
-              #@response[key.to_date.wday]=tmp
+              @response[key.to_date.wday]=tmp
               @response[key]=tmp
           end
-     @response = @response.sort {|a,b| a[0] <=> b[0] }
+     @response = @response.sort {|a,b| b[0] <=> a[0] }
       render :json  =>{
          :stream => @response}
     
