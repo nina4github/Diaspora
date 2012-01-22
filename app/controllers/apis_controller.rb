@@ -136,6 +136,25 @@ class ApisController < ApplicationController
     created_at.to_date.to_s(:db)
   end
   
+  def today
+    #like stream but grouped by day :) che palle
+    aspects = @user.aspects
+    @activity = params[:aspectname]
+    
+    @stream = retrieve_stream(@activity,@user.id)
+    # here I make my filter on last 7 days and group by created at date
+    # stream becomes a OrderedHash at this point
+    
+    @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now.midnight - 1.day])
+
+    @response = Hash.new
+    @stream.each do |key, value|
+              tmp=convert_to_activity_stream(value)
+              @response[key]=tmp
+          end
+      render :json  =>{
+         :stream => @response}
+    end
  
   # GET contacts for an aspect
   # (review 17Nov2011)
