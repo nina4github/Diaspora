@@ -120,11 +120,12 @@ class ApisController < ApplicationController
     @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by{|s| s.created_at.to_date.to_s(:db)}
     
     # I want to order the Hash in base to its 
-    @stream = @stream.sort{|a,b| b[0] <=> a[0] }
+    @stream = @stream.sort #{|a,b| b[0] <=> a[0] }
     @response = Hash.new
     @stream.each do |key, value|
               tmp=convert_to_activity_stream(value)
-              @response[key.to_date.wday]=tmp
+              #@response[key.to_date.wday]=tmp
+              @response[key]=tmp
           end
     
       render :json  =>{
@@ -418,7 +419,6 @@ class ApisController < ApplicationController
     #   format.json{ render(:json => true) }
     # end
 
-#  -- FROM HERE   
     aspect = @user.aspects.find_by_name(params[:aspectname])
     aspect_id = aspect.id
      # for compatibility with the code of StatusMessagesController.rb
@@ -433,6 +433,7 @@ class ApisController < ApplicationController
     photo_post.photos << photo
     photo_post.save
     
+    
     aspects = [aspect] 
     @user.add_to_streams(photo_post, aspects)
     receiving_services = @user.services.where(:type => params[:services].map{|s| "Services::"+s.titleize}) if params[:services]
@@ -442,7 +443,7 @@ class ApisController < ApplicationController
     respond_to do |format|
       format.json{ render(:layout => false , :json => {"success" => true, "data" => photo}.to_json )}
     end
-# -- TO HERE
+
 
 #     photos = Photo.where(:id => [*params[:photos]], :diaspora_handle => current_user.person.diaspora_handle)
 #     unless photos.empty?
