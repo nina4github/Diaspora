@@ -163,8 +163,7 @@ Diaspora::Application.routes.draw do
     get "aspects/:aspectname/contacts" => :contacts
     get "aspects/:aspectname/last" => :last
     get "aspects/:aspectname/week" => :week
-    get "aspects/:aspectname/today" => :today
-    
+    get "aspects/:aspectname/today" => :today 
     post "aspects/:aspectname/upload" => :upload
     
     get :profiles # get params[:ids] of array of people ids
