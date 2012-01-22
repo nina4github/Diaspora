@@ -163,6 +163,7 @@ Diaspora::Application.routes.draw do
     get "aspects/:aspectname/contacts" => :contacts
     get "aspects/:aspectname/last" => :last
     get "aspects/:aspectname/week" => :week
+    get "aspects/:aspectname/today" => :today
     
     post "aspects/:aspectname/upload" => :upload
     
