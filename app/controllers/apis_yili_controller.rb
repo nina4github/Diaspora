@@ -1,5 +1,7 @@
 class ApisYiliController < ApplicationController
-    
+    authenticate_with_oauth
+    before_filter :set_user_from_oauth
+    respond_to :json
     
     # GET the current user's profile
     def profile
@@ -432,7 +434,7 @@ class ApisYiliController < ApplicationController
           file
      end
   
-  
-     
-   
+    def set_user_from_oauth
+        @user = request.env['oauth2'].resource_owner
+    end
 end
