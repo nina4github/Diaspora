@@ -178,14 +178,8 @@ Diaspora::Application.routes.draw do
   end
   
   #*************api version 1*********************#
-  
-  scope 'api/v1', :controller => :apis_yili do
-      get :profile 
-  end
-  
-  namespace :apiv1 do 
-      resources :profiles, :users, :ascpects, :posts
-  end
+ 
+  resources :api_profiles, :api_users, :api_ascpects, :api_posts
   
   #*************************************************#
 
