@@ -5,7 +5,7 @@
 Diaspora::Application.routes.draw do
 
   # Posting and Reading
-  resources :apiprofiles
+
   resources :reshares
 
   resources :aspects do
@@ -98,7 +98,7 @@ Diaspora::Application.routes.draw do
     get   :stats, :as => 'pod_stats'
   end
 
-  resource :profile, :only => [:edit, :update]
+  resource :profile, :only => [:edit, :update, :show]
 
   resources :contacts,           :except => [:update, :create] do
     get :sharing, :on => :collection
@@ -182,7 +182,9 @@ Diaspora::Application.routes.draw do
       get :profile 
   end
 
-  
+  namespace :api do
+    resources :profiles
+  end
 
   #*************************************************#
 
