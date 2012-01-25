@@ -52,7 +52,7 @@ class ProfilesController < ApplicationController
 
   end
   
-  def show
+  def action
       if params[:id]!=0
           @user=User.find(params[:id])
       end
