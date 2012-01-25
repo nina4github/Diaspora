@@ -182,9 +182,9 @@ Diaspora::Application.routes.draw do
       get :profile 
   end
 
-  namespace :api do
-    resources :profiles
-  end
+  
+   resources :profiles
+
 
   #*************************************************#
 
