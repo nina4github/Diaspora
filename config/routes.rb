@@ -5,7 +5,7 @@
 Diaspora::Application.routes.draw do
 
   # Posting and Reading
-
+  resources :apiprofiles
   resources :reshares
 
   resources :aspects do
@@ -182,7 +182,7 @@ Diaspora::Application.routes.draw do
       get :profile 
   end
 
-  resources :apiprofiles
+  
 
   #*************************************************#
 
