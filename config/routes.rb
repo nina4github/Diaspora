@@ -98,7 +98,7 @@ Diaspora::Application.routes.draw do
     get   :stats, :as => 'pod_stats'
   end
 
-  resource :profile, :only => [:edit, :update, :show]
+  #resource :profile, :only => [:edit, :update, :show]
 
   resources :contacts,           :except => [:update, :create] do
     get :sharing, :on => :collection
