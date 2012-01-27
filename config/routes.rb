@@ -98,7 +98,7 @@ Diaspora::Application.routes.draw do
     get   :stats, :as => 'pod_stats'
   end
 
-  #resource :profile, :only => [:edit, :update, :show]
+  resource :profile, :only => [:edit, :update, :show]
 
   resources :contacts,           :except => [:update, :create] do
     get :sharing, :on => :collection
@@ -178,11 +178,8 @@ Diaspora::Application.routes.draw do
   end
   
   #*************api version 1*********************#
-  scope 'api/v1', :controller => :apis_yili do
-      get :profile 
-  end
-
-   resources :profiles
+  
+  match ':controller(/:id(/:action))', :controller => /apiv1\/[^\/]+/
 
   #*************************************************#
 

@@ -1,16 +1,7 @@
-class Api::ProfilesController < ApplicationController
-    authenticate_with_oauth
-    before_filter :set_user_from_oauth
-    respond_to :json
-      
-    def set_user_from_oauth
-        @user = request.env['oauth2'].resource_owner
-    end   
-     
+class Apiv1::ProfilesController < Api::BaseController
+  
+    #get a users' profile
     def show
-        if params[:id]!=0
-            @user=User.find(params[:id])
-        end
         @person = @user.person
         profile = @person.profile
         profiletags = Array.new
@@ -29,4 +20,5 @@ class Api::ProfilesController < ApplicationController
         }
         render :json => {:actor=>@response }
     end
+    
 end
