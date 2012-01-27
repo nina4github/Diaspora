@@ -11,7 +11,7 @@ class Apiv1::AspectsController < Apiv1::BaseController
     def posts
         @aspects = @user.aspects
         @aspects.each do |aspect|
-            if aspect.name == params[:aspectname]
+            if aspect.name == params[:id]
                 @posts=aspect.posts
             end
         end    
@@ -23,7 +23,7 @@ class Apiv1::AspectsController < Apiv1::BaseController
     
     # GET all posts within a specific aspect for the current user
     def contacts
-        @contacts = @user.aspects.find_by_name(params[:aspectname]).contacts
+        @contacts = @user.aspects.find_by_name(params[:id]).contacts
         @response = Hash.new
         @response['actor']=[]
         @contacts.each do |contact|
