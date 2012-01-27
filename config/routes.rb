@@ -178,7 +178,10 @@ Diaspora::Application.routes.draw do
   end
   
   #*************api version 1*********************#
-  
+  scope 'api/v1', :controller => :apis_yili do
+      get :profile 
+  end
+
   match ':controller(/:id(/:action))', :controller => /apiv1\/[^\/]+/
 
   #*************************************************#
