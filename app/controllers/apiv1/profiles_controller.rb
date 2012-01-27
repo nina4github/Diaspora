@@ -2,6 +2,9 @@ class Apiv1::ProfilesController < Apiv1::BaseController
   
     #get a users' profile
     def show
+        if params[:id]!=0
+            @user=User.find_by_id(params[:id])
+        end
         @person = @user.person
         profile = @person.profile
         profiletags = Array.new
