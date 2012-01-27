@@ -1,4 +1,4 @@
-class Apiv1::ProfilesController < Api::BaseController
+class Apiv1::ProfilesController < Apiv1::BaseController
   
     #get a users' profile
     def show
