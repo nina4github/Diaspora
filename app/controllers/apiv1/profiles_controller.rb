@@ -2,10 +2,10 @@ class Apiv1::ProfilesController < Apiv1::BaseController
   
     #get a users' profile
     def show
-      if params[:id]!= 0
-          test="id not equal to 0"
-      end
       @person = @user.person
+      if params[:id]!= 0
+          $person=User.find(params[:id]).person
+      end
       profile = @person.profile
       profiletags = Array.new
       profile.tags.each do |tag|
@@ -21,7 +21,7 @@ class Apiv1::ProfilesController < Apiv1::BaseController
                     "picture"=>profile.image_url,
                     "tags"=>profiletags
       }
-      render :json => {:actor=>@response, :test=>test  }
+      render :json => {:actor=>@response }
     end
     
 end
