@@ -18,7 +18,7 @@ class Apiv1::ProfilesController < Apiv1::BaseController
                     "picture"=>profile.image_url,
                     "tags"=>profiletags
       }
-      render :json => {:actor=>@response, :test=>test }
+      render :json => {:actor=>@response }
     end
     
 end
