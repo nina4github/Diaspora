@@ -2,10 +2,6 @@ class Apiv1::ProfilesController < Apiv1::BaseController
   
     #get a users' profile
     def show
-      if params[:id]!= 0
-          test=params[:id]
-          @user=User.find_by_username(params[:id])
-      end
       @person = @user.person
       profile = @person.profile
       profiletags = Array.new
