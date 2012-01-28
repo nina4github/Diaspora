@@ -1,16 +1,7 @@
-class ProfilesController < BaseController
-    authenticate_with_oauth
-    before_filter :set_user_from_oauth
-    respond_to :json
+class Apiv1::ProfilesController < Apiv1::BaseController
   
-    def set_user_from_oauth
-        @user = request.env['oauth2'].resource_owner
-    end
-    
+    #get a users' profile
     def show
-        if params[:id]!=0
-            @user=User.find(params[:id])
-        end
         @person = @user.person
         profile = @person.profile
         profiletags = Array.new
@@ -28,5 +19,22 @@ class ProfilesController < BaseController
                       "tags"=>profiletags
         }
         render :json => {:actor=>@response }
+    end
+    
+    def new
+        user=User.new
+        user.password=params[:password]
+        user.password_confirmation=params[:password_confirmation]
+        user.setup(params)
+        if user.save
+            user.seed_aspects
+            mes=I18n.t 'registrations.create.success'
+        else
+            user.errors.delete(:person)
+            mes=user.errors.full_messages.join(";")
+        end
+        render :json => {
+               :mes => mes
+        }
     end
 end
