@@ -52,9 +52,7 @@ class ProfilesController < ApplicationController
 
   end
   
-  def action
-    puts "cicciput"
-  end
+  
   
   
   # def show
