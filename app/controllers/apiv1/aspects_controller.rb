@@ -9,13 +9,7 @@ class Apiv1::AspectsController < Apiv1::BaseController
     
     # GET all posts within a specific aspect for the current user
     def posts
-        @aspects = @user.aspects
-        @aspects.each do |aspect|
-            if aspect.name == params[:id]
-                @posts=aspect.posts
-            end
-        end    
-                                    
+        @posts = @user.aspects.find_by_name(params[:id]).posts                                    
         render :json  => {
              :posts =>  @posts
         }
