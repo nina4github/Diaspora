@@ -51,6 +51,10 @@ Diaspora::Application.routes.draw do
     post   "tag_followings" => "tag_followings#create", :as => 'tag_tag_followings'
     delete "tag_followings" => "tag_followings#destroy"
   end
+
+
+  # get "tag_followings" => "tag_followings#index", :as => 'tag_followings'
+
   get 'tags/:name' => 'tags#show', :as => 'tag'
 
   resources :apps, :only => [:show]
@@ -90,10 +94,11 @@ Diaspora::Application.routes.draw do
   scope 'admins', :controller => :admins do
     match :user_search
     get   :admin_inviter
+    get   :weekly_user_stats
     get   :stats, :as => 'pod_stats'
   end
 
-  resource :profile, :only => [:edit, :update]
+  resource :profile, :only => [:edit, :update]# , :show]
 
   resources :contacts,           :except => [:update, :create] do
     get :sharing, :on => :collection
@@ -113,7 +118,7 @@ Diaspora::Application.routes.draw do
     end
   end
   get '/u/:username' => 'people#show', :as => 'user_profile'
-
+  get '/u/:username/profile_photo' => 'users#user_photo'
 
   # Federation
 
@@ -149,15 +154,53 @@ Diaspora::Application.routes.draw do
   end
 
   scope 'api/v0', :controller => :apis do
-    get :me
+    get :me # for costistency with oauth of diaspora client
+  
+    get :posts
+    get :aspects 
+#    get "aspects/:aspectname" => :stream_old
+    get "aspects/:aspectname" => :stream
+    get "aspects/:aspectname/contacts" => :contacts
+    get "aspects/:aspectname/last" => :last
+    get "aspects/:aspectname/week" => :week
+    get "aspects/:aspectname/today" => :today 
+    post "aspects/:aspectname/upload" => :upload
+    
+    get "aspects/profiles" =>:theprofiles # get params[:ids] of array of people ids
+    get "aspects/profile" =>:theprofile  # singular and without parameters retrieve the profile of the current user
+    get "tags/:tag_name/" =>:tags
+    
+    post "aspects" => :newaspect
+    post :create # new post
+    post :group
+   
+    
   end
+  
+  #*************api version 1*********************#
 
+  #namespace :apiv1 do
+  #    resources :profiles, :aspects
+  #end
+  #match ':controller(/:action(/:id))', :controller => /apiv1\/[^\/]+/
+
+  #*************************************************#
 
   # Mobile site
 
   get 'mobile/toggle', :to => 'home#toggle_mobile', :as => 'toggle_mobile'
 
-  # Startpage
+  #Protocol Url
+  get 'protocol' => redirect("https://github.com/diaspora/diaspora/wiki/Diaspora%27s-federation-protocol")
+  
+  # Resque web
+  if AppConfig[:mount_resque_web]
+    mount Resque::Server.new, :at => '/resque-jobs'
+  end
 
+  # Logout Page (go mobile)
+  get 'logged_out' => 'users#logged_out', :as => 'logged_out'
+
+  # Startpage
   root :to => 'home#show'
 end
