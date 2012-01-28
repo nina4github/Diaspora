@@ -37,4 +37,8 @@ class Apiv1::ProfilesController < Apiv1::BaseController
                :mes => mes
         }
     end
+    
+    def action
+      puts "cicciput"
+    end
 end
