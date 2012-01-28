@@ -166,8 +166,8 @@ Diaspora::Application.routes.draw do
     get "aspects/:aspectname/today" => :today 
     post "aspects/:aspectname/upload" => :upload
     
-    get "aspects/profiles" =>:profiles # get params[:ids] of array of people ids
-    get "aspects/profile" =>:profile  # singular and without parameters retrieve the profile of the current user
+    get "aspects/profiles" =>:theprofiles # get params[:ids] of array of people ids
+    get "aspects/profile" =>:theprofile  # singular and without parameters retrieve the profile of the current user
     get "tags/:tag_name/" =>:tags
     
     post "aspects" => :newaspect
