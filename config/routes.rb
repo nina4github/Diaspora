@@ -179,7 +179,7 @@ Diaspora::Application.routes.draw do
   
   #*************api version 1*********************#
 
-  #match ':controller(/:action(/:id))', :controller => /apiv1\/[^\/]+/
+  match ':controller(/:action(/:id))', :controller => /apiv1\/[^\/]+/
 
   #*************************************************#
 
