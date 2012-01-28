@@ -179,9 +179,9 @@ Diaspora::Application.routes.draw do
   
   #*************api version 1*********************#
 
-  #namespace :apiv1 do
-  #    resources :profiles, :aspects
-  #end
+  namespace :apiv1 do
+      resources :profiles, :aspects
+  end
   #match ':controller(/:action(/:id))', :controller => /apiv1\/[^\/]+/
 
   #*************************************************#
