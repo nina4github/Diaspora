@@ -182,9 +182,11 @@ Diaspora::Application.routes.draw do
   #namespace :apiv1 do
   #    resources :profiles, :aspects
   #end
-  match ':controller(/:action(/:id))', :controller => /apiv1\/[^\/]+/
+ #match ':controller(/:action(/:id))', :controller => /apiv1\/[^\/]+/
 
   #*************************************************#
+
+  resource :profile, :only => [:edit, :update]# , :show]
 
   # Mobile site
 
