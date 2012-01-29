@@ -38,7 +38,4 @@ class Apiv1::ProfilesController < Apiv1::BaseController
         }
     end
     
-    def action
-      puts "cicciput"
-    end
 end

@@ -1,7 +1,6 @@
 #   Copyright (c) 2010-2011, Diaspora Inc.  This file is
 #   licensed under the Affero General Public License version 3 or later.  See
 #   the COPYRIGHT file.
-
 class ProfilesController < ApplicationController
   before_filter :authenticate_user!
   def edit
@@ -52,6 +51,9 @@ class ProfilesController < ApplicationController
 
   end
   
+  def action
+    puts "cicciput"
+  end 
   # def show
   #       if params[:id]!=0
   #           @user=User.find(params[:id])
