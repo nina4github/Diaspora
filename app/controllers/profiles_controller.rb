@@ -4,16 +4,17 @@
 class ProfilesController < ApplicationController
   before_filter :authenticate_user!
   def edit
-    @person = current_user.person
-    @aspect  = :person_edit
-    @profile = @person.profile
-
-    @tags = @profile.tags
-    @tags_array = []
-    @tags.each do |obj| 
-      @tags_array << { :name => ("#"+obj.name),
-        :value => ("#"+obj.name)}
-      end
+    puts "ciao"
+    # @person = current_user.person
+    #    @aspect  = :person_edit
+    #    @profile = @person.profile
+    # 
+    #    @tags = @profile.tags
+    #    @tags_array = []
+    #    @tags.each do |obj| 
+    #      @tags_array << { :name => ("#"+obj.name),
+    #        :value => ("#"+obj.name)}
+    #      end
   end
 
   def update
