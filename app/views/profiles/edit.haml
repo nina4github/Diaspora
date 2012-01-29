@@ -3,16 +3,14 @@
 -#   the COPYRIGHT file.
 
 
-# #section_header
-#   %h2
-#     = t('settings')
-#   = render 'shared/settings_nav'
-# 
-# .span-12.prepend-5.last
-#   - content_for :submit_block do
-#     = link_to t('cancel'), person_path(current_user.person), :class => "button"
-#     = submit_tag t('.update_profile'), :class => "creation"
-#   = render :partial => 'edit', :locals => {:person => @person, 
-#     :profile => @profile, :aspect => @aspect, :step => @step}
+#section_header
+  %h2
+    = t('settings')
+  = render 'shared/settings_nav'
 
-ciao
+.span-12.prepend-5.last
+  - content_for :submit_block do
+    = link_to t('cancel'), person_path(current_user.person), :class => "button"
+    = submit_tag t('.update_profile'), :class => "creation"
+  = render :partial => 'edit', :locals => {:person => @person, 
+    :profile => @profile, :aspect => @aspect, :step => @step}
