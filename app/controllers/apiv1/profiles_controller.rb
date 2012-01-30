@@ -1,4 +1,8 @@
 class Apiv1::ProfilesController < Apiv1::BaseController
+
+    def edit
+      puts 'helo'
+    end
   
     #get a users' profile
     def show

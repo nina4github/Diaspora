@@ -51,10 +51,7 @@ class ProfilesController < ApplicationController
     end
 
   end
-  
-  def action
-    puts "cicciput"
-  end 
+
   # def show
   #       if params[:id]!=0
   #           @user=User.find(params[:id])

@@ -186,7 +186,7 @@ Diaspora::Application.routes.draw do
 
   #*************************************************#
 
-  resource :profile, :only => [:edit, :update]# , :show]
+#  resource :profile, :only => [:edit, :update]# , :show]
 
   # Mobile site
 
