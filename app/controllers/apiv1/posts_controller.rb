@@ -1,4 +1,5 @@
 class Apiv1::PostsController < Apiv1::BaseController
+  
     def index
         @posts = @user.aspects.find_by_name(params[:id]).posts                                    
         render :json  => {
@@ -7,6 +8,8 @@ class Apiv1::PostsController < Apiv1::BaseController
     end
   
     def show
-        
+        render :json  => {
+             :posts =>  "test"
+        }
     end
 end
