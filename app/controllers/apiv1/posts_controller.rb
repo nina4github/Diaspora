@@ -3,7 +3,7 @@ class Apiv1::PostsController < Apiv1::BaseController
     def index
         @aspects = @user.aspects
         @aspects.each do |aspect|
-            if aspect.name() == param[:aspectname]
+            if aspect.name() == params[:aspectname]
                 $posts=aspect.posts
             end
         end                                  
