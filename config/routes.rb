@@ -180,10 +180,7 @@ Diaspora::Application.routes.draw do
   #*************api version 1*********************#
 
   namespace :apiv1 do
-      resources :aspects do
-          recources :posts, :contacts
-      end
-      resources :profiles
+      resources :aspects, :posts, :contacts, :profiles
   end
   #match ':controller(/:action(/:id))', :controller => /apiv1\/[^\/]+/
 
