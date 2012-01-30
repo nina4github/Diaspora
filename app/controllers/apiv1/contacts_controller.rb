@@ -26,4 +26,10 @@ class Apiv1::ContactsController < Apiv1::BaseController
             :contacts=> @response
         }
     end
+    
+    def new
+        contact=Contact.find_by_user_id(params[:uid])
+        aspect=theAspect()
+        @user.add_contact_to_aspect(contact,aspect)
+    end
 end
