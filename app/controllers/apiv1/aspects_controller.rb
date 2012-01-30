@@ -8,14 +8,6 @@ class Apiv1::AspectsController < Apiv1::BaseController
     end
     
     # GET all posts within a specific aspect for the current user
-    def posts
-        @posts = @user.aspects.find_by_name(params[:id]).posts                                    
-        render :json  => {
-             :posts =>  @posts
-        }
-    end
-    
-    # GET all posts within a specific aspect for the current user
     def contacts
         @contacts = @user.aspects.find_by_name(params[:id]).contacts
         @response = Hash.new
