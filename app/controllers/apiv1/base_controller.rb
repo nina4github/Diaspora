@@ -12,9 +12,7 @@ class Apiv1::BaseController < ApplicationController
           var=params[:aspect]
           aspects = @user.aspects
           aspects.each do |aspect|
-              if var.is_a? Integer && aspect.id == var
-                  return aspect
-              elsif var.is_a? String && aspect.name.downcase == var.downcase
+              if aspect.name.downcase == var.downcase
                   return aspect
               end
           end    
