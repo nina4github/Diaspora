@@ -1,20 +1,12 @@
 class Apiv1::PostsController < Apiv1::BaseController
-  
     def index
-        @aspects = @user.aspects
-        @aspects.each do |aspect|
-            if aspect.name == params[:aspectname]
-                @posts=aspect.posts
-            end
-        end    
         render :json  => {
-            :posts =>  @posts
+            :posts => theAspect.posts
         }
     end
   
-    def show
-        render :json  => {
-             :posts =>  "test"
-        }
+    def new
+        @aspect=theAspect
     end
+    
 end
