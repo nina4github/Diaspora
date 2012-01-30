@@ -1,4 +1,4 @@
-class Posts_controller < Apiv1::BaseController
+class Api::Posts_controller < Apiv1::BaseController
   
     # GET all posts within a specific aspect for the current user
     def index
