@@ -1,5 +1,6 @@
 class Apiv1::AspectsController < Apiv1::BaseController
-  
+    has_many :posts
+    
     # GET a list of all aspects for a user
     def index
         render :json => {
