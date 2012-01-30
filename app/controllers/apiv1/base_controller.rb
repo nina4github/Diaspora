@@ -7,4 +7,14 @@ class Apiv1::BaseController < ApplicationController
          #@user = request.env['oauth2'].resource_owner
          @user=User.find_by_username(params[:user])
     end
+    
+    def theAspect
+          var=params[:aspect]
+          @aspects = @user.aspects
+          @aspects.each do |aspect|
+              if (var.is_a? Integer && aspect.id == var) || (var.is_a? String && aspect.name.downcase == var.downcase)
+                  return aspect
+              end
+          end    
+    end
 end
