@@ -1,9 +1,14 @@
 class Apiv1::PostsController < Apiv1::BaseController
   
     def index
-        #@posts = @user.aspects.find_by_name(params[:id]).posts                                    
+        @aspects = @user.aspects
+        @aspects.each do |aspect|
+            if aspect.name() == param[:aspectname]
+                $posts=aspect.posts
+            end
+        end                                  
         render :json  => {
-             :posts =>   "test" #@posts
+             :posts =>    @posts
         }
     end
   
