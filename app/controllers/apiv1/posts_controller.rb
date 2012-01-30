@@ -1,14 +1,15 @@
 class Apiv1::PostsController < Apiv1::BaseController
   
     def index
-        @aspects = @user.aspects
-        @aspects.each do |aspect|
-            if aspect.name() == params[:aspectname]
-                $posts=aspect.posts
-            end
-        end                                  
+        aspects = @user.aspects
+        @activity = params[:aspectname]
+      
+        @stream = retrieve_stream(@activity,@user.id)
+        @stream = @stream.sort{|a,b| b.created_at <=> a.created_at }
+        @stream = convert_to_activity_stream(@stream)
+                                                          
         render :json  => {
-             :posts =>    @posts
+           :posts => @stream,
         }
     end
   
