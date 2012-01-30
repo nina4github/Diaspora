@@ -1,17 +1,10 @@
 class Apiv1::AspectsController < Apiv1::BaseController
-  
+    has_many :posts
+    
     # GET a list of all aspects for a user
     def index
         render :json => {
               :aspects => @user.aspects       
-        }
-    end
-    
-    # GET all posts within a specific aspect for the current user
-    def posts
-        @posts = @user.aspects.find_by_name(params[:id]).posts                                    
-        render :json  => {
-             :posts =>  @posts
         }
     end
     

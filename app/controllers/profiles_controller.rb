@@ -1,20 +1,20 @@
 #   Copyright (c) 2010-2011, Diaspora Inc.  This file is
 #   licensed under the Affero General Public License version 3 or later.  See
 #   the COPYRIGHT file.
+
 class ProfilesController < ApplicationController
   before_filter :authenticate_user!
   def edit
-    puts "ciao"
-    # @person = current_user.person
-    #    @aspect  = :person_edit
-    #    @profile = @person.profile
-    # 
-    #    @tags = @profile.tags
-    #    @tags_array = []
-    #    @tags.each do |obj| 
-    #      @tags_array << { :name => ("#"+obj.name),
-    #        :value => ("#"+obj.name)}
-    #      end
+    @person = current_user.person
+    @aspect  = :person_edit
+    @profile = @person.profile
+
+    @tags = @profile.tags
+    @tags_array = []
+    @tags.each do |obj| 
+      @tags_array << { :name => ("#"+obj.name),
+        :value => ("#"+obj.name)}
+      end
   end
 
   def update
@@ -51,7 +51,11 @@ class ProfilesController < ApplicationController
     end
 
   end
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 65998bec2a0ab7757c832b9ee5aab44fbd452ee4
   # def show
   #       if params[:id]!=0
   #           @user=User.find(params[:id])
