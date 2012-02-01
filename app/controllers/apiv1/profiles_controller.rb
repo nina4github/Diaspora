@@ -8,9 +8,8 @@ class Apiv1::ProfilesController < Apiv1::BaseController
     def show
         @person = @user.person
         profile = @person.profile
-        profiletags = Array.new
         profile.tags.each do |tag|
-            profiletags << tag.name
+            category << tag.name
         end
         @response = [ "id"=>profile.id, 
                       "firstName" => profile.first_name,
@@ -18,7 +17,7 @@ class Apiv1::ProfilesController < Apiv1::BaseController
                       "description" => profile.bio,
                       "picture"=>profile.image_url,
                       "location"=>profile.location,
-                      "catogery"=>profiletags
+                      "catogery"=>category
         ]
         render :json => {:thing=>@response }
     end   
