@@ -26,12 +26,4 @@ class Apiv1::ProfilesController < Apiv1::BaseController
         ]
         render :json => {:thing=>@response }
     end   
-    
-<<<<<<< HEAD
 end
-=======
-    def edit
-        
-    end 
-end
->>>>>>> ab030bb3c6f2ef20c64d13025796c9578c296697
