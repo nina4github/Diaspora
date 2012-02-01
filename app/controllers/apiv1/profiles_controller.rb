@@ -12,16 +12,13 @@ class Apiv1::ProfilesController < Apiv1::BaseController
     def show
         @person = @user.person
         profile = @person.profile
-        profile.tags.each do |tag|
-            category << tag.name
-        end
         @response = [ "id"=>profile.id, 
                       "firstName" => profile.first_name,
                       "lastName" => profile.last_name,
                       "description" => profile.bio,
                       "picture"=>profile.image_url,
                       "location"=>profile.location,
-                      "catogery"=>category
+                      "catogery"=>profile.tags[0]
         ]
         render :json => {:thing=>@response }
     end   
