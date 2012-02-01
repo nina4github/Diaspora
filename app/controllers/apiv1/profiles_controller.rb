@@ -18,7 +18,7 @@ class Apiv1::ProfilesController < Apiv1::BaseController
                       "description" => profile.bio,
                       "picture"=>profile.image_url,
                       "location"=>profile.location,
-                      "catogery"=>profile.tags[0]
+                      "catogery"=>profile.tags[0].name
         ]
         render :json => {:thing=>@response }
     end   
