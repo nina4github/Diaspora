@@ -6,7 +6,7 @@ class Apiv1::PostsController < Apiv1::BaseController
         }
     end
   
-    def new
+    def create
         @aspect=theAspect
     end
     

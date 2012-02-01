@@ -8,7 +8,7 @@ class Apiv1::AspectsController < Apiv1::BaseController
     end
     
     #post a new aspect to the current user
-    def new
+    def create
         @aspect = @user.aspects.create(params[:aspect])
        
         if @aspect.valid?
