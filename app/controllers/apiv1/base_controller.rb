@@ -10,9 +10,6 @@ class Apiv1::BaseController < ApplicationController
     
     def theAspect
           var=params[:aspect]
-          if var==nil
-              render :json=> {"error" =>"please provide the aspect name"}
-          end
           aspects = @user.aspects
           aspects.each do |aspect|
               if aspect.name.downcase == var.downcase

@@ -4,6 +4,10 @@ class Apiv1::ProfilesController < Apiv1::BaseController
       puts 'helo'
     end
   
+    def index
+      render :json => {:actor=>"this is supporse to list all profiles here" } 
+    end
+  
     #get a users' profile
     def show
         @person = @user.person
@@ -14,32 +18,20 @@ class Apiv1::ProfilesController < Apiv1::BaseController
         end
         @response = { "id"=>profile.id, 
                       "name" => profile.full_name,
-                      "nichname" => profile.diaspora_handle,
-                      "preferredUsername" =>@user.username,
-                      "bithday"=>profile.birthday,
                       "gender"=>profile.gender,
-                      "note" => profile.bio,
+                      "description" => profile.bio,
                       "picture"=>profile.image_url,
+                      "location"=>profile.location,
                       "tags"=>profiletags
         }
         render :json => {:actor=>@response }
-    end
+    end   
     
-    def new
-        user=User.new
-        user.password=params[:password]
-        user.password_confirmation=params[:password_confirmation]
-        user.setup(params)
-        if user.save
-            user.seed_aspects
-            mes=I18n.t 'registrations.create.success'
-        else
-            user.errors.delete(:person)
-            mes=user.errors.full_messages.join(";")
-        end
-        render :json => {
-               :mes => mes
-        }
-    end
-    
+<<<<<<< HEAD
 end
+=======
+    def edit
+        
+    end 
+end
+>>>>>>> ab030bb3c6f2ef20c64d13025796c9578c296697
