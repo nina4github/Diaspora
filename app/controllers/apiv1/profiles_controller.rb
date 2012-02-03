@@ -6,9 +6,7 @@ class Apiv1::ProfilesController < Apiv1::BaseController
   
     #get a users' profile
     def show
-        if @user.nil?
-            render :json =>{ :text => 'User does not exist!', :status => 422 }
-        end
+        @user=User.find_by_username(params[:id])
         @person = @user.person
         profile = @person.profile
         profiletags = Array.new
@@ -26,7 +24,17 @@ class Apiv1::ProfilesController < Apiv1::BaseController
         render :json => {:thing=>@response }
     end   
     
-    def edit
-        
+    def update
+        params[:profile] ||= {}
+        params[:profile][:first_name]=params[:firstName]
+        params[:profile][:last_name]=params[:lastName]  
+        params[:profile][:bio]=params[:description]
+        params[:profile][:location]=params[:location]
+        params[:profile][:tag_string]=params[:category]
+        if @user.update_profile params[:profile]
+            render :text => I18n.t('profiles.update.updated'), :status => 200 
+        else
+            render :text => I18n.t('profiles.update.failed'), :status => 422 
+        end
     end 
 end
