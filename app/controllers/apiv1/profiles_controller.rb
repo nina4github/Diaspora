@@ -27,9 +27,6 @@ class Apiv1::ProfilesController < Apiv1::BaseController
         ]
         render :json => {:thing=>@response }
     end   
-<<<<<<< HEAD
-end
-=======
     
     def update
         params[:profile] ||= {}
@@ -45,4 +42,3 @@ end
         end
     end 
 end
->>>>>>> c0378d2e894863b77fcfe9c328986d582bd4a8c3
