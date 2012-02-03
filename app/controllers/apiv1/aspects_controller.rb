@@ -12,13 +12,9 @@ class Apiv1::AspectsController < Apiv1::BaseController
         @aspect = @user.aspects.create(params[:aspect])
        
         if @aspect.valid?
-            respond_to do |format|
-                format.json { render :text => I18n.t('aspects.create.success'), :status => 200 }
-            end
+            render :text => I18n.t('aspects.create.success'), :status => 200 
         else
-            respond_to do |format|
-                format.json { render :text => I18n.t('aspects.create.failure'), :status => 422 }
-            end
+            render :text => I18n.t('aspects.create.failure'), :status => 422 
         end
     end
 end
