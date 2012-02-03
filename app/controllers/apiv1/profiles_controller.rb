@@ -35,7 +35,7 @@ class Apiv1::ProfilesController < Apiv1::BaseController
         params[:profile][:last_name]=params[:lastName]  
         params[:profile][:bio]=params[:description]
         params[:profile][:location]=params[:location]
-        params[:profile][:tag_string]=params[:category]
+        params[:profile][:tag_string]='#'+params[:category]
         if @user.update_profile params[:profile]
             render :text => I18n.t('profiles.update.updated'), :status => 200 
         else
