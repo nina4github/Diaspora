@@ -13,7 +13,7 @@ class Apiv1::UsersController < Apiv1::BaseController
             mes=user.errors.full_messages.join(";")
         end
         render :json => {
-               :mes => mes
+               :user => user
         }
     end
 end
