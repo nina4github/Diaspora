@@ -7,10 +7,10 @@ class Apiv1::UsersController < Apiv1::BaseController
         user.setup(params)
         if user.save
             user.seed_aspects
-            render :text => I18n.t('registrations.create.success'), :status => 200 
+          render :json=> {:text => I18n.t('registrations.create.success'), :status => 200 }
         else
             user.errors.delete(:person)
-            render :text => user.errors.full_messages.join(";"), :status => 422 
+          render :json=> {:text => user.errors.full_messages.join(";"), :status => 422  }
         end
     end
 end
