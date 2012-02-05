@@ -6,7 +6,6 @@ class Apiv1::ProfilesController < Apiv1::BaseController
   
     #get a users' profile
     def show
-        @user=User.find_by_username(params[:id])
         @person = @user.person
         profile = @person.profile
         profiletags = Array.new
@@ -25,7 +24,6 @@ class Apiv1::ProfilesController < Apiv1::BaseController
     end   
     
     def update
-        @user=User.find_by_username(params[:id])
         params[:profile] ||= {}
         params[:profile][:first_name]=params[:firstName]
         params[:profile][:last_name]=params[:lastName]  
