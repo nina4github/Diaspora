@@ -35,7 +35,7 @@ class Apiv1::ProfilesController < Apiv1::BaseController
         params[:profile][:location]=params[:location]
         params[:profile][:tag_string]='#'+params[:category]
         if @user.update_profile params[:profile]
-            render :text => I18n.t('profiles.update.updated'), :status => 200 
+            render :json=>{:text => I18n.t('profiles.update.updated'), :status => 200 , :id=>@user.person.profile.id}
         else
             render :text => I18n.t('profiles.update.failed'), :status => 422 
         end
