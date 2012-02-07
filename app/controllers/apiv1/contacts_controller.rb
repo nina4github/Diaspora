@@ -27,7 +27,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
         }
     end
     
-    def create
+    def show
         @person = Person.find(params[:id])
 		@aspect = theAspect()
 
