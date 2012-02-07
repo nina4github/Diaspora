@@ -28,7 +28,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
     end
     
     def show
-        contact=Contact.find_by_username(params[:uid])
+        contact=Contact.find_by_id(params[:uid])
         aspect=theAspect()
         @user.add_contact_to_aspect(contact,aspect)
     end
