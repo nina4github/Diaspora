@@ -9,8 +9,8 @@ class Apiv1::AspectsController < Apiv1::BaseController
     
     #post a new aspect to the current user
     def show
-		puts params[:aspect]
-        @aspect = @user.aspects.create(params[:aspect])
+		render params[:aspect]
+        #@aspect = @user.aspects.create(params[:aspect])
        
         if @aspect.valid?
             render :text => I18n.t('aspects.create.success'), :status => 200 
