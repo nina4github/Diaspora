@@ -18,7 +18,8 @@ class Aspect < ActiveRecord::Base
   attr_accessible :name, :contacts_visible, :order_id
 
   before_validation do
-    name.strip!
+    render :json=>{:name=>name}
+	#name.strip!
   end
 
   def to_s
