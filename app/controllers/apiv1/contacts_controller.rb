@@ -28,8 +28,16 @@ class Apiv1::ContactsController < Apiv1::BaseController
     end
     
     def show
-        contact=Contact.find_by_id(params[:uid])
-        aspect=theAspect()
-        @user.add_contact_to_aspect(contact,aspect)
+        @person = Person.find(params[:id])
+		@aspect = theAspect()
+
+		if @contact = @user.share_with(@person, @aspect)
+		  flash.now[:notice] =  I18n.t 'aspects.add_to_aspect.success'
+		  respond_with AspectMembership.where(:contact_id => @contact.id, :aspect_id => @aspect.id).first
+		else
+		  flash[:error] = I18n.t 'contacts.create.failure'
+		  #TODO(dan) take this out once the .js template is removed
+		  render :nothing => true
+		end
     end
 end
