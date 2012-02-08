@@ -10,7 +10,7 @@ class Apiv1::AspectsController < Apiv1::BaseController
     
     #post a new aspect to the current user
     def create
-		render :json=>{ :params=>param[:aspect]}
+		render :json=>{ :params=>params[:aspect]}
         #@aspect = @user.aspects.create(params[:aspect])
         
         #if @aspect.valid?
