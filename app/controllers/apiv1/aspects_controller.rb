@@ -12,7 +12,7 @@ class Apiv1::AspectsController < Apiv1::BaseController
 		render :json=>params[:aspect]
         #@aspect = @user.aspects.create(params[:aspect])
         
-        3if @aspect.valid?
+        #if @aspect.valid?
          #   render :json=>{:text => I18n.t('aspects.create.success'), :status => 200 }
         #else
          #   render :json=>{:text => I18n.t('aspects.create.failure'), :status => 422 }
