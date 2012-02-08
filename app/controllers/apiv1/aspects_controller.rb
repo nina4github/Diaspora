@@ -11,7 +11,7 @@ class Apiv1::AspectsController < Apiv1::BaseController
     #post a new aspect to the current user
     def create
 		if params[:aspectname]
-			params[:aspect][:name]=params[:aspectname]
+			params[:aspect]={:name=>params[:aspectname]}
 		end
         @aspect = @user.aspects.create(params[:aspect])
         
