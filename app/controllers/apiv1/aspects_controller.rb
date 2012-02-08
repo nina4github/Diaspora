@@ -1,5 +1,6 @@
 class Apiv1::AspectsController < Apiv1::BaseController
-    
+    require 'active_support'
+	
     # GET a list of all aspects for a user
     def index
         render :json => {
