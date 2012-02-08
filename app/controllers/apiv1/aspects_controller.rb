@@ -9,12 +9,13 @@ class Apiv1::AspectsController < Apiv1::BaseController
     
     #post a new aspect to the current user
     def create
-        @aspect = @user.aspects.create(params[:aspect])
+		render :json=>params[:aspect]
+        #@aspect = @user.aspects.create(params[:aspect])
         
-        if @aspect.valid?
-            render :json=>{:text => I18n.t('aspects.create.success'), :status => 200 }
-        else
-            render :json=>{:text => I18n.t('aspects.create.failure'), :status => 422 }
-        end
+        3if @aspect.valid?
+         #   render :json=>{:text => I18n.t('aspects.create.success'), :status => 200 }
+        #else
+         #   render :json=>{:text => I18n.t('aspects.create.failure'), :status => 422 }
+        #end
     end
 end
