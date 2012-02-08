@@ -9,7 +9,7 @@ class Apiv1::AspectsController < Apiv1::BaseController
     
     #post a new aspect to the current user
     def create
-		params.with_indifferent_access
+		params= params.with_indifferent_access
 		render :json=>params[:aspect]
         #@aspect = @user.aspects.create(params[:aspect])
         
