@@ -457,7 +457,7 @@ class ApisController < ApplicationController
     
     
     respond_to do |format|
-      format.json{ render(:layout => false , :json => {"success" => true, "data" => photo}.to_json )}
+      format.json{ render(:layout => false , :json => {"success" => true, "data" => {"photo"=>photo, "path" => photo.remote_photo_name, "name" => photo.remote_photo_path}}.to_json )}
     end
 
 
