@@ -117,7 +117,9 @@ class ApisController < ApplicationController
     # here I make my filter on last 7 days and group by created at date
     # stream becomes a OrderedHash at this point
     
-    @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by{|s| s.created_at.to_date.to_s(:db)}
+    # @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by{|s| s.created_at.to_date.to_s(:db)}
+    # updated because FIND was giving not expected results
+    @stream = @stream.select {|p| p.created_at > Time.now - 7.day}.group_by{|s| s.created_at.to_date.to_s(:db)}
     # I want to order the Hash in base to its 
    # @stream = @stream.sort {|a,b| a[0] <=> b[0] }
     @response = Hash.new
@@ -145,8 +147,8 @@ class ApisController < ApplicationController
     # here I make my filter on last 7 days and group by created at date
     # stream becomes a OrderedHash at this point
     
-    @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now.midnight - 1.day])
-
+    # REPLACED WITH SELECT @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now.midnight - 1.day])
+    @stream = @stream.select {|p| p.created_at > Time.now.midnight - 1.day}#.group_by{|s| s.created_at.to_date.to_s(:db)}
     @stream = convert_to_activity_stream(@stream)
       render :json  =>{
          :stream => @stream}
@@ -455,7 +457,7 @@ class ApisController < ApplicationController
     
     
     respond_to do |format|
-      format.json{ render(:layout => false , :json => {"success" => true, "data" => photo}.to_json )}
+      format.json{ render(:layout => false , :json => {"success" => true, "data" => {"photo"=>photo, "path" => photo.remote_photo_name, "name" => photo.remote_photo_path,"id"=>photo.id}}.to_json )}
     end
 
 
@@ -575,7 +577,7 @@ class ApisController < ApplicationController
    # user_id = id of the user from which to control the visibility of the posts
    # return stream
    #
-   # todo => review how photos are created
+   # TODO => review how photos are created
    def retrieve_stream(aspect_name,user_id)
      
      # I had to recreate the stream object, because it was almost impossible to understand what exactly RUBY is doing behind the scenes
