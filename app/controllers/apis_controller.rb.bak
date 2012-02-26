@@ -3,36 +3,12 @@ class ApisController < ApplicationController
   before_filter :set_user_from_oauth
   respond_to :json
 
-   def me
-  #    debugger
-      @person = @user.person
-      render :json => {
-                        :birthday => @person.profile.birthday,
-                        :name => @person.name,
-                        :uid => @user.username
-                      }
-    end
-    
-  def profile
+  def me
     @person = @user.person
-    profile = @person.profile
-    profiletags = Array.new
-    profile.tags.each do |tag|
-      profiletags << tag.name
-    end
-    @response = {"id"=>profile.id, 
-                        "name" => profile.full_name,
-                        "nichname" => profile.diaspora_handle,
-                        "preferredUsername" =>@user.username,
-                        "bithday"=>profile.birthday,
-                        "gender"=>profile.gender,
-                        "note" => profile.bio,
-                        "picture"=>profile.image_url,
-                        "tags"=>profiletags}
-    render :json => {:actor=>@response
-                     # :birthday => @person.profile.birthday,
-                     #                      :name => @person.name,
-                     #                      :uid => @user.username
+    render :json => {
+                      :birthday => @person.profile.birthday,
+                      :name => @person.name,
+                      :uid => @user.username
                     }
   end
 
@@ -117,18 +93,16 @@ class ApisController < ApplicationController
     # here I make my filter on last 7 days and group by created at date
     # stream becomes a OrderedHash at this point
     
-    # @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by{|s| s.created_at.to_date.to_s(:db)}
-    # updated because FIND was giving not expected results
-    @stream = @stream.select {|p| p.created_at > Time.now - 7.day}.group_by{|s| s.created_at.to_date.to_s(:db)}
+    @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by{|s| s.created_at.to_date.to_s(:db)}
+    
     # I want to order the Hash in base to its 
-   # @stream = @stream.sort {|a,b| a[0] <=> b[0] }
+    @stream = @stream.sort{|a,b| b[0] <=> a[0] }
     @response = Hash.new
     @stream.each do |key, value|
               tmp=convert_to_activity_stream(value)
               @response[key.to_date.wday]=tmp
-              #@response[key]=tmp
           end
-    # @response = @response.sort {|a,b| b[0] <=> a[0] }
+    
       render :json  =>{
          :stream => @response}
     
@@ -138,21 +112,6 @@ class ApisController < ApplicationController
     created_at.to_date.to_s(:db)
   end
   
-  def today
-    #like stream but grouped by day :) che palle
-    aspects = @user.aspects
-    @activity = params[:aspectname]
-    
-    @stream = retrieve_stream(@activity,@user.id)
-    # here I make my filter on last 7 days and group by created at date
-    # stream becomes a OrderedHash at this point
-    
-    # REPLACED WITH SELECT @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now.midnight - 1.day])
-    @stream = @stream.select {|p| p.created_at > Time.now.midnight - 1.day}#.group_by{|s| s.created_at.to_date.to_s(:db)}
-    @stream = convert_to_activity_stream(@stream)
-      render :json  =>{
-         :stream => @stream}
-    end
  
   # GET contacts for an aspect
   # (review 17Nov2011)
@@ -184,7 +143,6 @@ class ApisController < ApplicationController
  end
  
  
-# TODO I guess this will need to be fixed with a consistent way to show profile info as the other contacts and profile functions
  def profiles
    @person_ids = JSON.parse(params[:ids])
    @profiles = Array.new
@@ -430,52 +388,7 @@ class ApisController < ApplicationController
    #   f.write(picture.read)
    #  end
     createphoto()
-    photo = @photo
-    # respond_to do |format|
-    #   format.json{ render(:json => true) }
-    # end
-
-    aspect = @user.aspects.find_by_name(params[:aspectname])
-    aspect_id = aspect.id
-     # for compatibility with the code of StatusMessagesController.rb
-    message = Hash.new
-    message[:aspect_ids] = [aspect_id]
-    message[:public] = false
-    message[:text] = "##{params[:aspectname]}"
-    current_user=@user
-    
-    
-    photo_post = current_user.build_post(:status_message, message)
-    photo_post.photos << photo
-    photo_post.save
-    
-    
-    aspects = [aspect] 
-    @user.add_to_streams(photo_post, aspects)
-    receiving_services = @user.services.where(:type => params[:services].map{|s| "Services::"+s.titleize}) if params[:services]
-    @user.dispatch_post(photo_post, :url => short_post_url(photo_post.guid), :services => receiving_services)
-    
-    
-    respond_to do |format|
-      format.json{ render(:layout => false , :json => {"success" => true, "data" => {"photo"=>photo, "path" => photo.remote_photo_name, "name" => photo.remote_photo_path,"id"=>photo.id}}.to_json )}
-    end
-
-
-#     photos = Photo.where(:id => [*params[:photos]], :diaspora_handle => current_user.person.diaspora_handle)
-#     unless photos.empty?
-#       @status_message.photos << photos
-#     end
-
-#     if @status_message.save
-#       Rails.logger.info("event=create type=status_message chars=#{params[:status_message][:text].length}")
-
-#       aspects = current_user.aspects_from_ids(params[:status_message][:aspect_ids])
-#       current_user.add_to_streams(@status_message, aspects)
-#       receiving_services = current_user.services.where(:type => params[:services].map{|s| "Services::"+s.titleize}) if params[:services]
-#       current_user.dispatch_post(@status_message, :url => short_post_url(@status_message.guid), :services => receiving_services)
-
    
-
   end
   
   
@@ -496,41 +409,35 @@ class ApisController < ApplicationController
        end
 
        params[:photo][:user_file] = file_handler(params)
-     #   file = file_handler(params)
-     #   
-     #   File.open('testupload/'+params[:original_filename],"wb") do |f|
-     #     f.write(open(file.path, "rb") {|io| io.read})
-     #   end
-     # end
 
        @photo = current_user.build_post(:photo, params[:photo])
-       
-              if @photo.save
-       
-                aspects = current_user.aspects_from_ids(params[:photo][:aspect_ids])
-       
-                unless @photo.pending
-                  current_user.add_to_streams(@photo, aspects)
-                  current_user.dispatch_post(@photo, :to => params[:photo][:aspect_ids])
-                end
-       
-                if params[:photo][:set_profile_photo]
-                  profile_params = {:image_url => @photo.url(:thumb_large),
-                                   :image_url_medium => @photo.url(:thumb_medium),
-                                   :image_url_small => @photo.url(:thumb_small)}
-                  current_user.update_profile(profile_params)
-                end
-       
-                # respond_to do |format|
-                #   format.json{ render(:layout => false , :json => {"success" => true, "data" => @photo}.to_json )}
-                # end
-              # else
-              #   respond_to do |format|
-              #      format.json{ render( :json => {"success" => false, "error" => message}.to_json )}
-              #    end
-              end
-       
-            end
+
+       if @photo.save
+
+         aspects = current_user.aspects_from_ids(params[:photo][:aspect_ids])
+
+         unless @photo.pending
+           current_user.add_to_streams(@photo, aspects)
+           current_user.dispatch_post(@photo, :to => params[:photo][:aspect_ids])
+         end
+
+         if params[:photo][:set_profile_photo]
+           profile_params = {:image_url => @photo.url(:thumb_large),
+                            :image_url_medium => @photo.url(:thumb_medium),
+                            :image_url_small => @photo.url(:thumb_small)}
+           current_user.update_profile(profile_params)
+         end
+
+         respond_to do |format|
+           format.json{ render(:layout => false , :json => {"success" => true, "data" => @photo}.to_json )}
+         end
+       else
+         respond_to do |format|
+            format.json{ render( :json => {"success" => false, "error" => message}.to_json )}
+          end
+       end
+
+     end
    end
   
   
@@ -577,7 +484,7 @@ class ApisController < ApplicationController
    # user_id = id of the user from which to control the visibility of the posts
    # return stream
    #
-   # TODO => review how photos are created
+   # todo => review how photos are created
    def retrieve_stream(aspect_name,user_id)
      
      # I had to recreate the stream object, because it was almost impossible to understand what exactly RUBY is doing behind the scenes

@@ -49,10 +49,17 @@ class ProfilesController < ApplicationController
     end
 
   end
+<<<<<<< HEAD
+
+=======
   
+<<<<<<< HEAD
+>>>>>>> 65998bec2a0ab7757c832b9ee5aab44fbd452ee4
+=======
   def action
     puts "cicciput"
   end 
+>>>>>>> 00421f2346d222f044d2d13d8119298f16e42f22
   # def show
   #       if params[:id]!=0
   #           @user=User.find(params[:id])

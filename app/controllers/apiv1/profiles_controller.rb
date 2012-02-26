@@ -1,4 +1,8 @@
 class Apiv1::ProfilesController < Apiv1::BaseController
+
+    def edit
+      puts 'helo'
+    end
   
     def index
       render :json => {:actor=>"this is supporse to list all profiles here" } 
