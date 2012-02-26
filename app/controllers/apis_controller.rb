@@ -148,7 +148,8 @@ class ApisController < ApplicationController
     # stream becomes a OrderedHash at this point
     
     # REPLACED WITH SELECT @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now.midnight - 1.day])
-    @stream = @stream.select {|p| p.created_at > Time.now.midnight - 1.day}#.group_by{|s| s.created_at.to_date.to_s(:db)}
+#    @stream = @stream.select {|p| p.created_at > Time.now.midnight - 1.day}#.group_by{|s| s.created_at.to_date.to_s(:db)}
+     @stream = @stream.select {|p| p.created_at > (Time.now + 1.day).midnight - 1.day}
     @stream = convert_to_activity_stream(@stream)
       render :json  =>{
          :stream => @stream}
