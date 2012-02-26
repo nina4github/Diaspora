@@ -6,7 +6,10 @@ class Apiv1::AspectsController < Apiv1::BaseController
         aspects = @user.aspects
         aspects.each do |aspect|
             if aspect.name.downcase == var.downcase
-                render :json => aspect 
+              render :json =>{:name=>aspect[:name],
+                              :id=>aspect[:id],
+                              :user_id=>aspect[:user_id]
+              }
             end
         end    
     end
@@ -14,7 +17,7 @@ class Apiv1::AspectsController < Apiv1::BaseController
     #post a new aspect to the current user
     def create
     		if params[:aspectname]
-    			params[:aspect]={:name=>params[:aspectname]}
+    			  params[:aspect]={:name=>params[:aspectname]}
     		end
         @aspect = @user.aspects.create(params[:aspect])
         
