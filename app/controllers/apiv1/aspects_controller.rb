@@ -2,10 +2,15 @@ class Apiv1::AspectsController < Apiv1::BaseController
     require 'active_support/core_ext/hash'
 	
     # GET a list of all aspects for a user
-    def index
-        render :json => {
-              :aspects => @user.aspects       
-        }
+    def show
+        var=params[:id]
+        aspects = @user.aspects
+        aspects.each do |aspect|
+            if aspect.name.downcase == var.downcase
+                render :json => aspect 
+            end
+        end    
+        render :json => "false"
     end
     
     #post a new aspect to the current user
