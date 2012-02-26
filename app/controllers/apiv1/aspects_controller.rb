@@ -1,7 +1,6 @@
 class Apiv1::AspectsController < Apiv1::BaseController
     require 'active_support/core_ext/hash'
 	
-    # GET a list of all aspects for a user
     def show
         var=params[:id]
         aspects = @user.aspects
@@ -10,7 +9,6 @@ class Apiv1::AspectsController < Apiv1::BaseController
                 render :json => aspect 
             end
         end    
-        render :json => "false"
     end
     
     #post a new aspect to the current user
