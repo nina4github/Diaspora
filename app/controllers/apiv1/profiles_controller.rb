@@ -20,7 +20,7 @@ class Apiv1::ProfilesController < Apiv1::BaseController
                       "location"=>profile.location,
                       "category"=>profiletags[0]
         ]
-        render :json => {:thing=>@response }
+        render :json => @response
     end   
     
     def update
