@@ -1,6 +1,6 @@
 class Apiv1::ContactsController < Apiv1::BaseController
   
-    # GET all posts within a specific aspect for the current user
+    # GET all contacts within a specific aspect for the current user
     def index
         @contacts = theAspect.contacts
         @response = Hash.new
@@ -11,15 +11,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
             profile.tags.each do |tag|
                 @profiletags << tag.name
             end
-            @response['actor']<<{"id"=>profile.id, 
-                          "name" => profile.full_name,
-                          "nichname" => profile.diaspora_handle,
-                          "preferredUsername" =>User.find(profile.id).username,
-                          "bithday"=>profile.birthday,
-                          "gender"=>profile.gender,
-                          "note" => profile.bio,
-                          "picture"=>profile.image_url,
-                          "tags"=>@profiletags}
+            @response['actor']<< profile.id 
         end
           
         render :json =>{
