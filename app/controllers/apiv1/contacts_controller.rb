@@ -23,7 +23,6 @@ class Apiv1::ContactsController < Apiv1::BaseController
     def create
         @ids=params[:ids]
         render :json =>@ids
-        
         @aspect = theAspect()
         
         @ids.each do |id|
