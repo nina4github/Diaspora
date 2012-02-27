@@ -24,9 +24,10 @@ class Apiv1::ContactsController < Apiv1::BaseController
         @ids=params[:ids]
         @aspect = theAspect()
         
-        #@ids.each do |id|
-            @person = Person.find(params[:id])
-            @contact = @user.share_with(@person, @aspect)
-        #end
+        @ids.each do |id|
+            @person = Person.find(id)
+            render :json=>{:user=>@user,:aspect=>@aspect, :person=>@person}
+            #@contact = @user.share_with(@person, @aspect)
+        end
     end
 end
