@@ -4,14 +4,14 @@ class Apiv1::ContactsController < Apiv1::BaseController
     def index
         @contacts = theAspect.contacts
         @response = Hash.new
-        @response['actor']=[]
+        @response=[]
         @contacts.each do |contact|
             profile= contact.person.profile
             @profiletags = Array.new
             profile.tags.each do |tag|
                 @profiletags << tag.name
             end
-            @response['actor']<< profile.id 
+            @response << profile.id 
         end
           
         render :json =>{
