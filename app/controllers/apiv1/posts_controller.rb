@@ -14,13 +14,13 @@ class Apiv1::PostsController < Apiv1::BaseController
         params[:status_message][:public] = false
         params[:status_message][:text] = params[:text]
         current_user=@user
-
+        render :json=>{:user=>@user, :aspect=>aspect, :text=> params[:text]}
         @status_message = current_user.build_post(:status_message, params[:status_message])    
         if @status_message.save
              Rails.logger.info("event=create type=status_message chars=#{params[:status_message][:text].length}")
              aspects = current_user.aspects_from_ids(params[:status_message][:aspect_ids])
              current_user.add_to_streams(@status_message, aspects)
-             render :json => {:create =>@status_message.guid, :status => '201'}
+             #render :json => {:create =>@status_message.guid, :status => '201'}
         end
     end
     
