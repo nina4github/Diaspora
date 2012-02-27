@@ -25,7 +25,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
         @aspect = theAspect()
         
         @ids.each do |id|
-            @person = Person.find(id)
+            @person = Person.find(Integer(id))
             @contact = @user.share_with(@person, @aspect)
         end
     end
