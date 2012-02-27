@@ -12,6 +12,8 @@ class Apiv1::ContactsController < Apiv1::BaseController
                 @profiletags << tag.name
             end
             @response << profile.id 
+         #self id
+         @response << @user.person.profile.id 
         end
           
         render :json =>{
