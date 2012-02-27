@@ -20,7 +20,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
         }
     end
     
-    def show
+    def create
         @ids=params[:ids]
         @aspect = theAspect()
         
