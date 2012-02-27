@@ -10,6 +10,7 @@ class Apiv1::PostsController < Apiv1::BaseController
         aspect =theAspect()
         aspect_id = aspect.id
         # for compatibility with the code of StatusMessagesController.rb
+        params[:status_message]=[]
         params[:status_message][:aspect_ids] = [aspect_id]
         params[:status_message][:public] = false
         params[:status_message][:text] = params[:text]
