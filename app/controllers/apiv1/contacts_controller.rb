@@ -21,10 +21,10 @@ class Apiv1::ContactsController < Apiv1::BaseController
     end
     
     def create
-        ids=params[:ids]
+        @ids=params[:ids]
         @aspect = theAspect()
         
-        ids.each do |id|
+        @ids.each do |id|
             @person = Person.find(id)
             @contact = @user.share_with(@person, @aspect)
         end
