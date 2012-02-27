@@ -119,7 +119,7 @@ class ApisController < ApplicationController
     
     # @stream = @stream.find(:all,:conditions=>["posts.created_at > ?", Time.now - 7.day]).group_by{|s| s.created_at.to_date.to_s(:db)}
     # updated because FIND was giving not expected results
-    @stream = @stream.select {|p| p.created_at > Time.now - 7.day}.group_by{|s| s.created_at.to_date.to_s(:db)}
+    @stream = @stream.select {|p| p.created_at > Time.now - 6.day}.group_by{|s| s.created_at.to_date.to_s(:db)}
     # I want to order the Hash in base to its 
    # @stream = @stream.sort {|a,b| a[0] <=> b[0] }
     @response = Hash.new
