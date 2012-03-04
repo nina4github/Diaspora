@@ -3,14 +3,16 @@ class Apiv1::ContactsController < Apiv1::BaseController
     # GET all contacts within a specific aspect for the current user
     def index
         @contacts = theAspect.contacts
-        @response=[]
+        @uid=[]
+		@pid=[]
         @contacts.each do |contact|
-            @response << contact.user_id 
+			@pid << contact.person.profile.id
+            @uid << contact.user_id 
         end
         #self id
-        @response << @user.id   
+        @uid << @user.id   
         render :json =>{
-            :contacts=> @response
+            :uid=> @uid, :pid=>@pid
         }
     end
     
