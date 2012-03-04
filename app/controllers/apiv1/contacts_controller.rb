@@ -5,9 +5,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
         @contacts = theAspect.contacts
         @uid=[]
 		@pid=[]
-		@cid=[]
         @contacts.each do |contact|
-			@cid << contact.id
 			@pid << contact.person_id
             @uid << contact.user_id 
         end
@@ -15,7 +13,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
 		@pid << @user.person.id
         @uid << @user.id		
         render :json =>{
-            :uid=> @uid, :pid=>@pid, :cid=>@cid
+            :uid=> @uid, :pid=>@pid, :cid=>@contacts
         }
     end
     
