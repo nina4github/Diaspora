@@ -8,7 +8,7 @@ class Apiv1::BaseController < ApplicationController
          if(!params[:username].nil?)
               @user=User.find_by_username(params[:username])
          else
-              @user=User.find_by_username(params[:id])
+              @user=User.find_by_username(params[:userid])
          end
     end
     
