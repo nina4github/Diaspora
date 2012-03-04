@@ -6,10 +6,11 @@ class Apiv1::ContactsController < Apiv1::BaseController
         @uid=[]
 		@pid=[]
         @contacts.each do |contact|
-			@pid << contact.person.profile.id
+			@pid << contact.person.id
             @uid << contact.user_id 
         end
         #self id
+		@pid << @user.person.id
         @uid << @user.id   
         render :json =>{
             :uid=> @uid, :pid=>@pid
