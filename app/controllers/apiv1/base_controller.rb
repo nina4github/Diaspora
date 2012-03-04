@@ -4,14 +4,12 @@ class Apiv1::BaseController < ApplicationController
     respond_to :json
     
     def set_user_from_oauth
-         #@user = request.env['oauth2'].resource_owner
-         if(!params[:username].nil?)
-              @user=User.find_by_username(params[:username])
-         elsif(!params[:userid].nil?)
-              @user=User.find_by_id(params[:userid])
+        #@user = request.env['oauth2'].resource_owner
+        if(!params[:username].nil?)
+            @user=User.find_by_username(params[:username])
 		else
-              @user=User.find_by_username(params[:id])
-         end
+            @user=User.find_by_username(params[:id])
+        end
     end
     
     def theAspect
