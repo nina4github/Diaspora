@@ -12,8 +12,8 @@ class Apiv1::ContactsController < Apiv1::BaseController
             @uid << contact.user_id 
         end
         #self id
-		#@pid << @user.person.id
-        #@uid << @user.id   
+		@pid << @user.person.id
+        @uid << @user.id		
         render :json =>{
             :uid=> @uid, :pid=>@pid, :cid=>@cid
         }
