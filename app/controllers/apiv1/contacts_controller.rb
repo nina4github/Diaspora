@@ -7,8 +7,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
 		@pid=[]
         @contacts.each do |contact|
 			@pid << contact.person_id
-			@person = Person.find(id)
-            @uid << @person.owner_id 
+            @uid << contact.person.owner_id 
         end
         #self id
 		@pid << @user.person.id
