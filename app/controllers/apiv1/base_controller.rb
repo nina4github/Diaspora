@@ -7,6 +7,8 @@ class Apiv1::BaseController < ApplicationController
         #@user = request.env['oauth2'].resource_owner
         if(!params[:username].nil?)
             @user=User.find_by_username(params[:username])
+		elsif(!params[:userid].nil?)
+            @user=User.find_by_id(params[:userid])
 		else
             @user=User.find_by_username(params[:id])
         end
