@@ -7,6 +7,9 @@ class Apiv1::UsersController < Apiv1::BaseController
         user.setup(params)
         if user.save
             user.seed_aspects
+            if(!params[:aspectname].nil)
+                user.aspects.create(:name =>params[:aspectname] )
+            end
             render :json=> {:mes => I18n.t('registrations.create.success'), :status => 200 }
         else
             user.errors.delete(:person)
