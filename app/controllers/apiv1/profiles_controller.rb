@@ -10,6 +10,9 @@ class Apiv1::ProfilesController < Apiv1::BaseController
   
     #get a users' profile
     def show
+		if @user.nil?
+			render :json=>{:text => 'user does not exist', :status => 404}
+		end
         @person = @user.person
         profile = @person.profile
         profiletags = Array.new
