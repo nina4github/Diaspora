@@ -13,7 +13,7 @@ class Apiv1::AspectsController < Apiv1::BaseController
 				return;
             end
         end 
-		render :json=>{:text => "no aspect found", :status => 422 }
+        render :json=>{:text => "no aspect found", :status => 422 }
     end
     
     #post a new aspect to the current user

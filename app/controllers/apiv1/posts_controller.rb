@@ -23,7 +23,7 @@ class Apiv1::PostsController < Apiv1::BaseController
              current_user.add_to_streams(@status_message, aspects)
              receiving_services = current_user.services.where(:type => params[:services].map{|s| "Services::"+s.titleize}) if params[:services]
              current_user.dispatch_post(@status_message, :url => short_post_url(@status_message.guid), :services => receiving_services)
-             #render :json => {:create =>@status_message.guid, :status => '201'}
+             render :json => {:create =>@status_message.guid, :status => '200'}
         end
     end
     
