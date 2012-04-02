@@ -1,5 +1,14 @@
 class Apiv1::UsersController < Apiv1::BaseController
     
+	#get a users' profile
+    def show
+		if !@user.nil?
+			render :json => { "username" => @user.username }
+		else
+			render :json => { "text" => "user does not exists", :status=>404 }
+		end
+    end   
+	
     def create
         user=User.new
         user.password=params[:password]
