@@ -3,7 +3,7 @@ class Apiv1::UsersController < Apiv1::BaseController
 	#get a users' profile
     def show
 		if !@user.nil?
-			render :json => { "username" => @user.username }
+			render :json => { "id"=>@user.id, "username" => @user.username }
 		else
 			render :json => { "text" => "user does not exists", :status=>404 }
 		end

@@ -6,12 +6,14 @@ class Apiv1::AspectsController < Apiv1::BaseController
         aspects = @user.aspects
         aspects.each do |aspect|
             if aspect.name.downcase == var.downcase
-              render :json =>{:name=>aspect[:name],
+				render :json =>{:name=>aspect[:name],
                               :id=>aspect[:id],
                               :user_id=>aspect[:user_id]
-              }
+							  }
+				return;
             end
-        end    
+        end 
+		render :json=>{:text => "no aspect found", :status => 422 }
     end
     
     #post a new aspect to the current user
