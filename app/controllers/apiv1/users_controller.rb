@@ -3,7 +3,7 @@ class Apiv1::UsersController < Apiv1::BaseController
 	#get a users' profile
     def show
     		if !@user.nil?
-    			render :json => { "id"=>@user.id, "username" => @user.username, "feedId"=> @user.person.profile.bio }
+    			render :json => { "id"=>@user.id, "username" => @user.username, "feedId"=> @user.email }
     		else
     			render :json => { "text" => "user does not exists", :status=>404 }
     		end
@@ -15,9 +15,6 @@ class Apiv1::UsersController < Apiv1::BaseController
         user.password_confirmation=params[:password_confirmation]
         user.setup(params)
         if user.save
-			param[:profile] ||= {}
-			param[:profile][:bio]=params[:feedId]
-			user.update_profile param[:profile]
             render :json=> {:id => user.id, :status => 200 }
         else
             user.errors.delete(:person)
