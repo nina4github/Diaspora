@@ -13,9 +13,10 @@ class Apiv1::UsersController < Apiv1::BaseController
         user=User.new
         user.password=params[:password]
         user.password_confirmation=params[:password_confirmation]
-		user.invitation_token=params[:feedId]
         user.setup(params)
         if user.save
+			user.profile.bio=params[:feedId]
+			user.profile.save
             render :json=> {:id => user.id, :status => 200 }
         else
             user.errors.delete(:person)
