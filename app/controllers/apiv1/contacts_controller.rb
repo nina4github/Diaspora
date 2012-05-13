@@ -34,7 +34,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
 		end
 		me={"id"=>@user.id, "username"=>@user.username,"feedId"=>feedId}
 		users << me
-        render :json => users
+        render :json =>{:user=>users}
     end
 	
     
