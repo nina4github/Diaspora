@@ -16,6 +16,18 @@ class Apiv1::ContactsController < Apiv1::BaseController
             :uid=> @uid, :pid=>@pid
         }
     end
+	
+	def all
+        @contacts = theAspect.contacts
+        users=[]
+        @contacts.each do |contact|
+            users << contact.person.user.username 
+        end
+        #self id
+		users << @user.username		
+        render :json => users
+    end
+	
     
     def create
         @ids=params[:ids]
