@@ -181,8 +181,8 @@ Diaspora::Application.routes.draw do
   #*************api version 1*********************#
 
   namespace :apiv1 do
+	match 'contacts/all'   => 'contacts#all'
       resources :aspects, :posts, :contacts, :profiles, :users
-	  match 'contacts/all'   => 'contacts#all'
   end
   #match ':controller(/:action(/:id))', :controller => /apiv1\/[^\/]+/
 
