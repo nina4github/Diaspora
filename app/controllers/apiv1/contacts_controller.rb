@@ -19,7 +19,6 @@ class Apiv1::ContactsController < Apiv1::BaseController
 	
 	def all
         @contacts = theAspect.contacts
-		@contacts << @user
         users=[]
         @contacts.each do |contact|
 			user=contact.user
@@ -37,7 +36,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
         @ids.each do |id|
             @person = Person.find(id)
             @contact = @user.contact_for(@person)
-            if $contact.nil?
+            if @contact.nil?
                 @user.share_with(@person, @aspect)
             else
                 @user.add_contact_to_aspect(@contact, @aspect)
