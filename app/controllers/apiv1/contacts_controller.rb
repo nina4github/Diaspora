@@ -25,6 +25,8 @@ class Apiv1::ContactsController < Apiv1::BaseController
 			newuser={"id"=>user.id, "username"=>user.username}
             users << newuser
         end
+		me={"id"=>@user.id, "username"=>@user.username}
+		users << me
         render :json => users
     end
 	
