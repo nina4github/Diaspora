@@ -7,7 +7,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
 		@pid=[]
         @contacts.each do |contact|
 			@pid << contact.person_id
-            @uid << contact.user_id 
+            @uid << contact.person.owner_id 
         end
         #self id
 		@pid << @user.person.id
@@ -21,8 +21,8 @@ class Apiv1::ContactsController < Apiv1::BaseController
         @contacts = theAspect.contacts
         users=[]
         @contacts.each do |contact|
-			u=User.find_by_id(contact.user_id)
-			newuser={"id"=>u.id, "username"=>u.username}
+			user=User.find_by_id(contact.person.owner_id)
+			newuser={"id"=>user.id, "username"=>user.username, "feedId"=>user.email.nil? '':user.email.split("@").first}
             users << newuser
         end
         render :json => users
