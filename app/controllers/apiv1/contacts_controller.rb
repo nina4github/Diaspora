@@ -19,12 +19,13 @@ class Apiv1::ContactsController < Apiv1::BaseController
 	
 	def all
         @contacts = theAspect.contacts
+		@contacts<<$user
         users=[]
         @contacts.each do |contact|
-            users << contact.user.username 
+			user=contact.user
+			newuser={:id=>user.id, :username=>user.username, :feedId=>@user.email.nil? '':@user.email.split("@").first}
+            users << newuser
         end
-        #self id
-		users << @user.username		
         render :json => users
     end
 	
