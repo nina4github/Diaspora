@@ -21,7 +21,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
         @contacts = theAspect.contacts
         users=[]
         @contacts.each do |contact|
-            users << contact.person.user.username 
+            users << contact.user.username 
         end
         #self id
 		users << @user.username		
