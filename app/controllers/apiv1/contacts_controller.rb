@@ -22,7 +22,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
         users=[]
         @contacts.each do |contact|
 			user=contact.user
-			newuser={"id"=>user.id, "username"=>user.username, "feedId"=>user.email.nil? '':user.email.split("@").first}
+			newuser={"id"=>user.id, "username"=>user.username}
             users << newuser
         end
         render :json => users
