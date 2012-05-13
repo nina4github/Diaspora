@@ -21,8 +21,8 @@ class Apiv1::ContactsController < Apiv1::BaseController
         @contacts = theAspect.contacts
         users=[]
         @contacts.each do |contact|
-			user=contact.user
-			newuser={"id"=>user.id, "username"=>user.username}
+			u=contact.user
+			newuser={"id"=>u.id, "username"=>u.username}
             users << newuser
         end
         render :json => users
