@@ -23,7 +23,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
 		@newUsers=[]
 		
         @contacts.each do |contact|
-			users << User.find_by_id(contact.person.owner_id)
+			@users << User.find_by_id(contact.person.owner_id)
         end
 		#add myself
 		@users << @user
@@ -32,8 +32,7 @@ class Apiv1::ContactsController < Apiv1::BaseController
 			pieces=user.email.split("@")
 			feedId=pieces.first
 			category=pieces[1].split(".").first
-			newuser={"id"=>user.id, "username"=>user.username, "feedId"=>feedId, "category"=>category}
-			@newusers << newuser
+			@newusers << {"id"=>user.id, "username"=>user.username, "feedId"=>feedId, "category"=>category}
 		end
         render :json => @newusers
     end
