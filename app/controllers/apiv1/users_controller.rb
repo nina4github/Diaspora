@@ -17,12 +17,9 @@ class Apiv1::UsersController < Apiv1::BaseController
         user.password=params[:password]
         user.password_confirmation=params[:password_confirmation]
         user.setup(params)
-        if user.save
-            render :json=> {:id => user.id, :status => 200 }
-        else
-            user.errors.delete(:person)
-            render :json=> {:error => user.errors.full_messages.join(";"), :status => 422  }
-        end
+        
+        render :json=> {:username => params[:username],:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation] }
+        
     end
     
     def destroy
