@@ -19,22 +19,23 @@ class Apiv1::ContactsController < Apiv1::BaseController
 	
 	def all
         @contacts = theAspect.contacts
-        users=[]
+        @users=[]
+		@newUsers=[]
+		
         @contacts.each do |contact|
-			user=User.find_by_id(contact.person.owner_id)
-			if !user.email.nil?
-				feedId=user.email.split("@").first
-			end
-			newuser={"id"=>user.id, "username"=>user.username, "feedId"=>feedId}
-            users << newuser
+			users << User.find_by_id(contact.person.owner_id)
         end
-		feedId=''
-		if !@user.email.nil?
-			feedId=@user.email.split("@").first
+		#add myself
+		@users << @user
+		
+		@users.each do |user|
+			pieces=user.email.split("@")
+			feedId=pieces.first
+			category=pieces[1].split(".").first
+			newuser={"id"=>user.id, "username"=>user.username, "feedId"=>feedId, "category"=>category}
+			@newusers << newuser
 		end
-		me={"id"=>@user.id, "username"=>@user.username,"feedId"=>feedId}
-		users << me
-        render :json => users
+        render :json => @newusers
     end
 	
     
