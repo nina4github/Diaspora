@@ -29,7 +29,7 @@ class Apiv1::UsersController < Apiv1::BaseController
     def update
       # change email
       if params[:email]
-        @user.unconfirmed_email = params[:email]
+        @user.email = params[:email]
         if @user.save
             render :json => { "email"=>params[:email], :status=>200 }
         else
