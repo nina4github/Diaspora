@@ -31,7 +31,7 @@ class Apiv1::UsersController < Apiv1::BaseController
       if params[:email]
         @user.unconfirmed_email = params[:email]
         if @user.save
-            render :json => { "email"=>params[:email], "user" => @user, :status=>200 }
+            render :json => { "email"=>params[:email], :status=>200 }
         else
             render :json => { "text" => "update failed", :status=>500 }
         end
