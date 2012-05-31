@@ -7,11 +7,19 @@ class Apiv1::PostsController < Apiv1::BaseController
     end
   
     def create
+        ids=Array.new
         aspect =theAspect()
-        aspect_id = aspect.id
+        if aspect
+            ids.push aspect.id
+        else
+            aspects = @user.aspects
+            aspects.each do |aspect|
+                ids.push aspect.id
+            end
+        end
         # for compatibility with the code of StatusMessagesController.rb
         params[:status_message]={}
-        params[:status_message][:aspect_ids] = [aspect_id]
+        params[:status_message][:aspect_ids] = ids
         params[:status_message][:public] = false
         params[:status_message][:text] = params[:text]
         current_user=@user
