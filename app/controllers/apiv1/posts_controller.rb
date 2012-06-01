@@ -8,11 +8,14 @@ class Apiv1::PostsController < Apiv1::BaseController
   
     def create
         ids=Array.new
-        aspect =theAspect()
-        if aspect
-            ids.push aspect.id
+        aspects = @user.aspects
+        if params[:aspect]
+            aspects.each do |aspect|
+                 if aspect.name.downcase == params[:aspect].downcase
+                     ids.push aspect.id
+                 end
+             end    
         else
-            aspects = @user.aspects
             aspects.each do |aspect|
                 ids.push aspect.id
             end
